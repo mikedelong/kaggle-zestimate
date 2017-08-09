@@ -28,14 +28,18 @@ logger.debug('Properties read done.')
 
 # let's write out some summary statistics about the properties before we go on.
 logger.debug('properties data shape: %s' % (properties.shape,))
-missing_col = properties.columns[properties.isnull().any()].tolist()
-logger.debug(missing_col)
+columns_with_missing_values = properties.columns[properties.isnull().any()].tolist()
+logger.debug('we have %d columns that have missing values: %s' %
+             (len(columns_with_missing_values), columns_with_missing_values))
+columns_with_no_missing_values = properties.columns[~(properties.isnull().any())].tolist()
+logger.debug('we have %d columns that have no missing values: %s' %
+             (len(columns_with_no_missing_values), columns_with_no_missing_values))
 
 logger.debug('loading training data')
-train = pandas.read_csv('../input/train_2016_v2.csv')
+training_file = '../input/train_2016_v2.csv'
+train = pandas.read_csv(training_file)
 logger.debug('training data load complete.')
 logger.debug('training data shape: %s' % (train.shape,))
-
 
 
 logger.debug('done')
