@@ -40,7 +40,6 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
-
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
@@ -73,7 +72,7 @@ dtest = xgb.DMatrix(x_test)
 random_seed = 1
 # xgboost parameters
 xgboost_parameters = {
-    'alpha': 0.0,
+    'alpha': 0.1,
     'base_score': y_mean,
     'eta': 0.025,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
     'eval_metric': 'mae',
@@ -83,15 +82,14 @@ xgboost_parameters = {
     'objective': 'reg:linear',
     'seed': random_seed,
     'silent': 1,
-    'subsample': 0.80
+    'subsample': 0.7
 }
 logger.debug('xgboost parameters: %s' % xgboost_parameters)
 xgb_boost_rounds = 1200  # was 1000
 # cross-validation
 cross_validation_nfold = 5
 
-cv_result = xgb.cv(xgboost_parameters,
-                   dtrain,
+cv_result = xgb.cv(xgboost_parameters, dtrain,
                    early_stopping_rounds=25,
                    nfold=cross_validation_nfold,
                    num_boost_round=xgb_boost_rounds,
@@ -103,11 +101,11 @@ logger.debug('for boost we actually used %d rounds' % actual_boost_rounds)
 if False:
     logger.debug(cv_result)
 
-actual_boost_rounds = xgb_boost_rounds
 # train model
 watchlist = [(dtrain, 'train')]
 
-model = xgb.train(dict(xgboost_parameters, silent=1), dtrain=dtrain, num_boost_round=actual_boost_rounds,evals=watchlist)
+model = xgb.train(dict(xgboost_parameters, silent=1), dtrain=dtrain, num_boost_round=actual_boost_rounds,
+                  evals=watchlist)
 logger.debug('model trained.')
 # predict
 predictions = model.predict(dtest)
