@@ -9,6 +9,8 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import mean_absolute_error
 from datetime import datetime
 
+import sys
+
 start_time = time.time()
 # set up logging
 formatter = logging.Formatter('%(asctime)s : %(name)s :: %(levelname)s : %(message)s')
@@ -41,8 +43,12 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
+# drop out outliers
+outlier_limit = 0.36
+
 properties_copy = properties.copy(deep=True)
 t0 = train.merge(properties_copy, how='left', on='parcelid')
+t0 = t0[abs(t0.logerror) < outlier_limit]
 t0['transactiondate'] = pd.to_datetime(t0['transactiondate'])
 
 t0['month'] = t0['transactiondate'].dt.month
@@ -65,25 +71,21 @@ for c in t8.dtypes[t8.dtypes == object].index.values:
 t9 = xgb.DMatrix(t8, t6)
 t10 = xgb.DMatrix(t11)
 
-
-
-
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
 x_train = train_df.drop(['parcelid', 'logerror', 'transactiondate'], axis=1)
 logger.debug('dropping parcel ID from properties to get test data.')
 
-additional_columns_to_drop = ['typeconstructiontypeid', 'regionidcounty', 'architecturalstyletypeid',
-                              'threequarterbathnbr']
-additional_columns_to_drop = []
+if False:
+    additional_columns_to_drop = ['typeconstructiontypeid', 'regionidcounty', 'architecturalstyletypeid',
+                                  'threequarterbathnbr']
+else:
+    additional_columns_to_drop = []
 test_columns_to_drop = ['parcelid'] + additional_columns_to_drop
 x_test = properties.drop(test_columns_to_drop, axis=1)
 # shape
 logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shape,)))
-
-# drop out outliers
-outlier_limit = 0.36
 
 train_df = train_df[abs(train_df.logerror) < outlier_limit]
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
@@ -112,29 +114,47 @@ xgboost_parameters = {
     'silent': 1,
     'subsample': 0.80
 }
-logger.debug('xgboost parameters: %s' % xgboost_parameters)
+best_xgboost_parameters = xgboost_parameters.copy()
+best_error = sys.maxint
+
 xgb_boost_rounds = 1200  # was 1000
 # cross-validation
 cross_validation_nfold = 5
+for eta in [0.0252, 0.0255, 0.257]:
+    for subsample in [0.65, 0.7, 0.75]:
+        for alpha in [0.0, 0.05, 0.1]:
+            xgboost_parameters['alpha'] = alpha
+            xgboost_parameters['eta'] = eta
+            xgboost_parameters['subsample'] = subsample
+            logger.debug('xgboost parameters: %s' % xgboost_parameters)
 
-cv_result_small = xgb.cv(xgboost_parameters,
-                   t9,
-                   early_stopping_rounds=30,
-                   nfold=cross_validation_nfold,
-                   num_boost_round=xgb_boost_rounds,
-                   seed=random_seed,
-                   show_stdv=False,
-                   verbose_eval=1)
-actual_small_boost_rounds = len(cv_result_small)
-logger.debug('for small boost we actually used %d rounds' % actual_small_boost_rounds)
-model_small = xgb.train(dict(xgboost_parameters, silent=1), dtrain=t9,
-                        num_boost_round=actual_small_boost_rounds)  # ,evals=[(t9, 'train')])
-predictions_small = model_small.predict(t10)
-logger.debug('mean absolute error from small model: %.6f' % mean_absolute_error(t12, predictions_small))
+            cv_result_small = xgb.cv(xgboost_parameters,t9,
+                                     early_stopping_rounds=30,
+                                     nfold=cross_validation_nfold,
+                                     num_boost_round=xgb_boost_rounds,
+                                     seed=random_seed,
+                                     show_stdv=False,
+                                     verbose_eval=25)
+            actual_small_boost_rounds = len(cv_result_small)
+            logger.debug('for small boost we actually used %d rounds' % actual_small_boost_rounds)
+            model_small = xgb.train(dict(xgboost_parameters, silent=1), dtrain=t9,
+                                    num_boost_round=actual_small_boost_rounds)  # ,evals=[(t9, 'train')])
+            predictions_small = model_small.predict(t10)
 
-cv_result = xgb.cv(xgboost_parameters,
+            error_result = mean_absolute_error(t12, predictions_small)
+            logger.debug('mean absolute error from small model: %.6f' % error_result)
+            if error_result < best_error:
+                best_error = error_result
+                best_xgboost_parameters['alpha'] = alpha
+                best_xgboost_parameters['eta'] = eta
+                best_xgboost_parameters['subsample'] = subsample
+                logger.debug('switching eta to %.3f, subsample to %.3f' % (eta, subsample))
+logger.debug('after iteration through several parameter candidates the best parameters are %s' %
+             best_xgboost_parameters)
+
+cv_result = xgb.cv(best_xgboost_parameters,
                    dtrain,
-                   early_stopping_rounds=25,
+                   early_stopping_rounds=30,
                    nfold=cross_validation_nfold,
                    num_boost_round=xgb_boost_rounds,
                    seed=random_seed,
@@ -146,9 +166,13 @@ if False:
     logger.debug(cv_result)
 
 # train model
-watchlist = [(dtrain, 'train')]
+if False:
+    watchlist = [(dtrain, 'train')]
+else:
+    watchlist = []
 
-model = xgb.train(dict(xgboost_parameters, silent=1), dtrain=dtrain, num_boost_round=actual_boost_rounds,evals=watchlist)
+model = xgb.train(dict(xgboost_parameters, silent=1), dtrain=dtrain, num_boost_round=actual_boost_rounds,
+                  evals=watchlist)
 logger.debug('model trained.')
 # predict
 predictions = model.predict(dtest)
