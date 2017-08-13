@@ -72,8 +72,9 @@ dtest = xgb.DMatrix(x_test)
 random_seed = 1
 # xgboost parameters
 xgboost_parameters = {
-    'alpha': 0.1,
+    'alpha': 0.0,
     'base_score': y_mean,
+    'colsample_bytree' : 1.0,
     'eta': 0.025,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
