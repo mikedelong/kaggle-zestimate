@@ -122,10 +122,16 @@ output_columns = output.columns.tolist()
 output = output[output_columns[-1:] + output_columns[:-1]]
 logger.debug('our submission file has %d rows (should be 18232?)' % len(output))
 
+use_gzip_compression = True
 submission_prefix = 'zestimate'
 output_filename = '{}{}.csv'.format(submission_prefix, datetime.now().strftime('%Y%m%d_%H%M%S'))
-logger.debug('writing submission to %s' % output_filename)
-output.to_csv(output_filename, index=False, float_format='%.4f')
+if use_gzip_compression:
+    output_filename += '.gz'
+    logger.debug('writing submission to %s' % output_filename)
+    output.to_csv(output_filename, index=False, float_format='%.4f', compression='gzip')
+else:
+    logger.debug('writing submission to %s' % output_filename)
+    output.to_csv(output_filename, index=False, float_format='%.4f')
 
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1))
