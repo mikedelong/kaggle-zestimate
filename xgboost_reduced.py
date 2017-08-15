@@ -51,9 +51,21 @@ if do_consolidate_columns:
         lambda x: 0 if np.isnan(x) else x).astype(float)
     properties['yardbuildingsqft26'] = properties['yardbuildingsqft26'].apply(
         lambda x: 0 if np.isnan(x) else x).astype(float)
-    properties['yard_building_square_feet'] = properties['yardbuildingsqft17'].astype(int) + properties[
+    properties['yard_building_square_feet'] = properties['yardbuildingsqft17'].astype(float) + properties[
         'yardbuildingsqft26'].astype(float)
     properties = properties.drop(['yardbuildingsqft17', 'yardbuildingsqft26'], axis=1)
+
+    properties['finishedsquarefeet12'] = properties['finishedsquarefeet12'].apply(
+        lambda x: 0 if np.isnan(x) else x).astype(float)
+    properties['finishedsquarefeet13'] = properties['finishedsquarefeet13'].apply(
+        lambda x: 0 if np.isnan(x) else x).astype(float)
+    properties['finishedsquarefeet15'] = properties['finishedsquarefeet15'].apply(
+        lambda x: 0 if np.isnan(x) else x).astype(float)
+    properties['finishedsquarefeet50'] = properties['finishedsquarefeet50'].apply(
+        lambda x: 0 if np.isnan(x) else x).astype(float)
+    properties['finishedsquarefeet'] = properties['finishedsquarefeet12'].astype(float) + properties[
+        'finishedsquarefeet13'].astype(float) + properties['finishedsquarefeet15'].astype(float) + properties['finishedsquarefeet50'].astype(float)
+    properties = properties.drop(['finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15', 'finishedsquarefeet50'], axis=1)
 
 # drop out outliers
 outlier_limit = 0.36
