@@ -1,16 +1,16 @@
 import logging
 import operator
+import pickle
+import sys
 import time
+from datetime import datetime
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from sklearn.preprocessing import LabelEncoder
 from sklearn.metrics import mean_absolute_error
-from datetime import datetime
-import matplotlib.pyplot as plt
-import sys
-import pickle
+from sklearn.preprocessing import LabelEncoder
 
 start_time = time.time()
 # set up logging
@@ -64,8 +64,10 @@ if do_consolidate_columns:
     properties['finishedsquarefeet50'] = properties['finishedsquarefeet50'].apply(
         lambda x: 0 if np.isnan(x) else x).astype(float)
     properties['finishedsquarefeet'] = properties['finishedsquarefeet12'].astype(float) + properties[
-        'finishedsquarefeet13'].astype(float) + properties['finishedsquarefeet15'].astype(float) + properties['finishedsquarefeet50'].astype(float)
-    properties = properties.drop(['finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15', 'finishedsquarefeet50'], axis=1)
+        'finishedsquarefeet13'].astype(float) + properties['finishedsquarefeet15'].astype(float) + properties[
+                                           'finishedsquarefeet50'].astype(float)
+    properties = properties.drop(
+        ['finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15', 'finishedsquarefeet50'], axis=1)
 
 # drop out outliers
 outlier_limit = 0.36
@@ -129,7 +131,7 @@ random_seed = 1
 xgboost_parameters = {
     'alpha': 0.0,
     'base_score': y_mean,
-    'colsample_bytree' : 1.0,
+    'colsample_bytree': 1.0,
     'eta': 0.025,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
@@ -147,7 +149,7 @@ xgb_boost_rounds = 1200  # was 1000
 # cross-validation
 cross_validation_nfold = 5
 
-cv_result_small = xgb.cv(xgboost_parameters,t9,
+cv_result_small = xgb.cv(xgboost_parameters, t9,
                          early_stopping_rounds=30,
                          nfold=cross_validation_nfold,
                          num_boost_round=xgb_boost_rounds,
@@ -231,7 +233,6 @@ else:
 make_feature_graph = True
 if make_feature_graph:
     plt.savefig(figure_filename)
-
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
