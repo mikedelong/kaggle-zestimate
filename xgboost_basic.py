@@ -43,16 +43,21 @@ for c in properties.columns:
         properties[c] = label_encoder.transform(list(properties[c].values))
 
 # do some data cleansing before we proceed
-properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-properties['hasbasement'] = properties['basementsqft'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-properties['hashottuborspa'] = properties['hashottuborspa'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-properties['haspool'] = properties['poolcnt'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-properties.drop(['airconditioningtypeid', 'basementsqft', 'hashottuborspa', 'poolcnt'], axis=1)
+do_one_hot_cleanup = True
+if do_one_hot_cleanup:
+    properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties['hasbasement'] = properties['basementsqft'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties['hashottuborspa'] = properties['hashottuborspa'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties['haspool'] = properties['poolcnt'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties = properties.drop(['airconditioningtypeid', 'basementsqft', 'hashottuborspa', 'poolcnt'], axis=1)
 
+logger.debug(list(properties))
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
+logger.debug(list(train_df))
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
 x_train = train_df.drop(['parcelid', 'logerror', 'transactiondate'], axis=1)
+logger.debug(list(x_train))
 logger.debug('dropping parcel ID from properties to get test data.')
 
 # additional_columns_to_drop = ['typeconstructiontypeid', 'regionidcounty', 'architecturalstyletypeid',
@@ -131,16 +136,19 @@ output_columns = output.columns.tolist()
 output = output[output_columns[-1:] + output_columns[:-1]]
 logger.debug('our submission file has %d rows (should be 18232?)' % len(output))
 
+make_submission = True
 use_gzip_compression = True
 submission_prefix = 'zestimate'
 output_filename = '{}{}.csv'.format(submission_prefix, datetime.now().strftime('%Y%m%d_%H%M%S'))
 if use_gzip_compression:
     output_filename += '.gz'
-    logger.debug('writing submission to %s' % output_filename)
-    output.to_csv(output_filename, index=False, float_format='%.4f', compression='gzip')
+    if make_submission:
+        logger.debug('writing submission to %s' % output_filename)
+        output.to_csv(output_filename, index=False, float_format='%.4f', compression='gzip')
 else:
-    logger.debug('writing submission to %s' % output_filename)
-    output.to_csv(output_filename, index=False, float_format='%.4f')
+    if make_submission:
+        logger.debug('writing submission to %s' % output_filename)
+        output.to_csv(output_filename, index=False, float_format='%.4f')
 
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
@@ -149,10 +157,10 @@ logger.debug('features by importance (ascending): %s' % importance)
 features = zip(*importance)[0]
 scores = zip(*importance)[1]
 x_pos = np.arange(len(features))
-
-
+plt.figure(figsize=(16, 9))
 plt.bar(x_pos, scores,align='center')
-plt.xticks(x_pos, features, rotation = 'vertical')
+plt.xticks(x_pos, features, rotation = 45) # was 'vertical'
+plt.tight_layout()
 plt.ylabel('Feature importance')
 
 if use_gzip_compression:
@@ -160,7 +168,9 @@ if use_gzip_compression:
 else:
     figure_filename = output_filename.replace('.gz', '.png')
 
-plt.savefig(figure_filename)
+make_feature_graph = True
+if make_feature_graph:
+    plt.savefig(figure_filename)
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
