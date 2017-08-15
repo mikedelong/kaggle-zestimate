@@ -43,17 +43,35 @@ for c in properties.columns:
         properties[c] = label_encoder.transform(list(properties[c].values))
 
 # do some data cleansing before we proceed
-do_one_hot_cleanup = True
+do_one_hot_cleanup = False
 if do_one_hot_cleanup:
-    properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(
+        lambda x: 0 if np.isnan(x) else 1).astype(float)
     properties['hasbasement'] = properties['basementsqft'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
     properties['hashottuborspa'] = properties['hashottuborspa'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
     properties['haspool'] = properties['poolcnt'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
     properties = properties.drop(['airconditioningtypeid', 'basementsqft', 'hashottuborspa', 'poolcnt'], axis=1)
 
+do_consolidate_columns = True
+if do_consolidate_columns:
+    # Columns to be consolidated
+    properties['yardbuildingsqft17'] = properties['yardbuildingsqft17'].apply(lambda x: 0 if np.isnan(x) else x).astype(
+        float)
+    properties['yardbuildingsqft26'] = properties['yardbuildingsqft26'].apply(lambda x: 0 if np.isnan(x) else x).astype(
+        float)
+    properties['yard_building_square_feet'] = properties['yardbuildingsqft17'].astype(int) + properties[
+        'yardbuildingsqft26'].astype(float)
+    properties = properties.drop(['yardbuildingsqft17', 'yardbuildingsqft26'], axis=1)
+
 logger.debug(list(properties))
+
+# properties['transactiondate'] = pd.to_datetime(properties['transactiondate'])
+# properties['Month'] = properties['transactiondate'].dt.month
+# properties['dayofweek'] = properties['transactiondate'].dt.dayofweek
+
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
+
 logger.debug(list(train_df))
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
 x_train = train_df.drop(['parcelid', 'logerror', 'transactiondate'], axis=1)
@@ -88,7 +106,7 @@ random_seed = 1
 xgboost_parameters = {
     'alpha': 0.0,
     'base_score': y_mean,
-    'colsample_bytree' : 1.0,
+    'colsample_bytree': 1.0,
     'eta': 0.025,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
@@ -158,8 +176,8 @@ features = zip(*importance)[0]
 scores = zip(*importance)[1]
 x_pos = np.arange(len(features))
 plt.figure(figsize=(16, 9))
-plt.bar(x_pos, scores,align='center')
-plt.xticks(x_pos, features, rotation = 45) # was 'vertical'
+plt.bar(x_pos, scores, align='center')
+plt.xticks(x_pos, features, rotation=45)  # was 'vertical'
 plt.tight_layout()
 plt.ylabel('Feature importance')
 
