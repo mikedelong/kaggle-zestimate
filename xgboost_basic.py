@@ -8,6 +8,8 @@ import pandas as pd
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
 
+import matplotlib.pyplot as plt
+
 start_time = time.time()
 # set up logging
 formatter = logging.Formatter('%(asctime)s : %(name)s :: %(levelname)s : %(message)s')
@@ -45,6 +47,7 @@ properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(lam
 properties['hasbasement'] = properties['basementsqft'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
 properties['hashottuborspa'] = properties['hashottuborspa'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
 properties['haspool'] = properties['poolcnt'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+properties.drop(['airconditioningtypeid', 'basementsqft', 'hashottuborspa', 'poolcnt'], axis=1)
 
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
@@ -140,8 +143,24 @@ else:
     output.to_csv(output_filename, index=False, float_format='%.4f')
 
 importance = model.get_fscore()
-importance = sorted(importance.items(), key=operator.itemgetter(1))
+importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (ascending): %s' % importance)
+
+features = zip(*importance)[0]
+scores = zip(*importance)[1]
+x_pos = np.arange(len(features))
+
+
+plt.bar(x_pos, scores,align='center')
+plt.xticks(x_pos, features, rotation = 'vertical')
+plt.ylabel('Feature importance')
+
+if use_gzip_compression:
+    figure_filename = output_filename.replace('.csv.gz', '.png')
+else:
+    figure_filename = output_filename.replace('.gz', '.png')
+
+plt.savefig(figure_filename)
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
