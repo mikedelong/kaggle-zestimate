@@ -40,6 +40,12 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
+# do some data cleansing before we proceed
+properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+properties['hasbasement'] = properties['basementsqft'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+properties['hashottuborspa'] = properties['hashottuborspa'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+properties['haspool'] = properties['poolcnt'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
