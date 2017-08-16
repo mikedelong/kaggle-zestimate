@@ -214,7 +214,7 @@ else:
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (ascending): %s' % importance)
-# logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
+logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
 
 output_pickle_file = './xgboost_reduced.pickle'
 with open(output_pickle_file, 'wb') as outfile_fp:
