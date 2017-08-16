@@ -55,6 +55,8 @@ if do_consolidate_columns:
         'yardbuildingsqft26'].astype(float)
     properties = properties.drop(['yardbuildingsqft17', 'yardbuildingsqft26'], axis=1)
 
+    properties['finishedsquarefeet6'] = properties['finishedsquarefeet6'].apply(
+        lambda x: 0 if np.isnan(x) else x).astype(float)
     properties['finishedsquarefeet12'] = properties['finishedsquarefeet12'].apply(
         lambda x: 0 if np.isnan(x) else x).astype(float)
     properties['finishedsquarefeet13'] = properties['finishedsquarefeet13'].apply(
@@ -63,11 +65,13 @@ if do_consolidate_columns:
         lambda x: 0 if np.isnan(x) else x).astype(float)
     properties['finishedsquarefeet50'] = properties['finishedsquarefeet50'].apply(
         lambda x: 0 if np.isnan(x) else x).astype(float)
-    properties['finishedsquarefeet'] = properties['finishedsquarefeet12'].astype(float) + properties[
-        'finishedsquarefeet13'].astype(float) + properties['finishedsquarefeet15'].astype(float) + properties[
+    properties['finishedsquarefeet'] = properties['finishedsquarefeet6'].astype(float) + properties[
+        'finishedsquarefeet12'].astype(float) + properties['finishedsquarefeet13'].astype(float) + properties[
+                                           'finishedsquarefeet15'].astype(float) + properties[
                                            'finishedsquarefeet50'].astype(float)
     properties = properties.drop(
-        ['finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15', 'finishedsquarefeet50'], axis=1)
+        ['finishedsquarefeet6', 'finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15',
+         'finishedsquarefeet50'], axis=1)
 
 # drop out outliers
 outlier_limit = 0.36
@@ -210,6 +214,7 @@ else:
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (ascending): %s' % importance)
+# logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
 
 output_pickle_file = './xgboost_reduced.pickle'
 with open(output_pickle_file, 'wb') as outfile_fp:
