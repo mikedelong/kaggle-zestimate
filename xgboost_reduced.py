@@ -44,6 +44,16 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
+logger.debug(list(properties))
+do_data_cleanup = True
+if do_data_cleanup:
+    properties['hasbasement'] = properties["basementsqft"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties['fireplacecnt'] = properties['fireplacecnt'].apply(lambda x: 0 if np.isnan(x) else x).astype(float)
+
+    if False:
+        properties['haspool'] = properties["poolcnt"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+        properties = properties.drop(['poolcnt'], axis=1)
+
 do_consolidate_columns = True
 if do_consolidate_columns:
     # Columns to be consolidated
@@ -51,7 +61,7 @@ if do_consolidate_columns:
         lambda x: 0 if np.isnan(x) else x).astype(float)
     properties['yardbuildingsqft26'] = properties['yardbuildingsqft26'].apply(
         lambda x: 0 if np.isnan(x) else x).astype(float)
-    properties['yard_building_square_feet'] = properties['yardbuildingsqft17'].astype(float) + properties[
+    properties['yardbuildingsqft'] = properties['yardbuildingsqft17'].astype(float) + properties[
         'yardbuildingsqft26'].astype(float)
     properties = properties.drop(['yardbuildingsqft17', 'yardbuildingsqft26'], axis=1)
 
@@ -72,6 +82,7 @@ if do_consolidate_columns:
     properties = properties.drop(
         ['finishedsquarefeet6', 'finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15',
          'finishedsquarefeet50'], axis=1)
+
 
 # drop out outliers
 outlier_limit = 0.36
@@ -136,7 +147,7 @@ xgboost_parameters = {
     'alpha': 0.0,
     'base_score': y_mean,
     'colsample_bytree': 1.0,
-    'eta': 0.025,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
+    'eta': 0.026,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
     'lambda': 1.0,  # default is 1.0
@@ -211,11 +222,12 @@ else:
         logger.debug('writing submission to %s' % output_filename)
         output.to_csv(output_filename, index=False, float_format='%.4f')
 
-importance = model.get_fscore()
-importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
+f_score = model.get_fscore()
+importance = sorted(f_score.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (ascending): %s' % importance)
 logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
-
+insignificant_features = set([item[0] for item in f_score.items()]).symmetric_difference( set(list(x_train)))
+logger.debug('here are the insignificant features: %s' % sorted(list(insignificant_features)))
 output_pickle_file = './xgboost_reduced.pickle'
 with open(output_pickle_file, 'wb') as outfile_fp:
     pickle.dump(importance, outfile_fp)
