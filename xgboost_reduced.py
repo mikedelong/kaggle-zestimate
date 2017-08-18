@@ -50,11 +50,15 @@ if do_data_cleanup:
     properties['hasbasement'] = properties["basementsqft"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
     properties['fireplacecnt'] = properties['fireplacecnt'].apply(lambda x: 0 if np.isnan(x) else x).astype(float)
 
+    # drop a duplicate column that Zillow doesn't use
+    properties = properties.drop(['bathroomcnt'],axis=1)
+
     if False:
         properties['haspool'] = properties["poolcnt"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
         properties = properties.drop(['poolcnt'], axis=1)
 
-do_consolidate_columns = True
+
+do_consolidate_columns = False
 if do_consolidate_columns:
     # Columns to be consolidated
     properties['yardbuildingsqft17'] = properties['yardbuildingsqft17'].apply(
@@ -83,6 +87,13 @@ if do_consolidate_columns:
         ['finishedsquarefeet6', 'finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15',
          'finishedsquarefeet50'], axis=1)
 
+do_sqrt = True
+if do_sqrt:
+    properties['calculatedfinishedfeet'] = properties['calculatedfinishedsquarefeet'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties = properties.drop(['calculatedfinishedsquarefeet'], axis=1)
+
+    properties['finishedfeet12'] = properties['finishedsquarefeet12'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties = properties.drop(['finishedsquarefeet12'], axis=1)
 
 # drop out outliers
 outlier_limit = 0.36
@@ -109,7 +120,6 @@ for c in t8.dtypes[t8.dtypes == object].index.values:
     t8[c] = (t8[c] is True)
 
 logger.debug(list(t8))
-# t8 = t8.values.astype(np.float32, copy=False)
 t9 = xgb.DMatrix(t8, t6)
 t10 = xgb.DMatrix(t11)
 
@@ -151,11 +161,11 @@ xgboost_parameters = {
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
     'lambda': 1.0,  # default is 1.0
-    'max_depth': 7,  # todo try a range of values from 3 to 7 (?) default = 6
+    'max_depth': 9,  # todo try a range of values from 3 to 7 (?) default = 6
     'objective': 'reg:linear',
     'seed': random_seed,
     'silent': 1,
-    'subsample': 0.7
+    'subsample': 0.875 # was 0.7
 }
 best_xgboost_parameters = xgboost_parameters.copy()
 best_error = sys.maxint
