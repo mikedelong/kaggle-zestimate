@@ -27,9 +27,8 @@ Given a set of inputs we are looking for the log-error between the Zillow estima
 Datasets and inputs
 -------------------
 We have two data files as input:
-* A training set of properties and home features for 2016
-* A training set of transactions for 2016
-
+* A training set of properties and home features for 2016: 2985217 properties and 58 features.
+* A training set of transactions for 2016: 90275 transactions, including sale prices and dates.
 
 In this competition, Zillow is asking you to predict the log-error between their Zestimate and the actual sale price, given all the features of a home. The log error is defined as
 logerror=log(Zestimate)−log(SalePrice)
