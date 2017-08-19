@@ -111,7 +111,7 @@ upper_limit = 0.37
 properties_copy = properties.copy(deep=True)
 t0 = train.merge(properties_copy, how='left', on='parcelid')
 # t0 = t0[abs(t0.logerror) < outlier_limit]
-t0 = t0[t0.logerror < upper_limit and t0 > lower_limit]
+t0 = t0[(t0.logerror < upper_limit) & (t0.logerror > lower_limit)]
 t0['transactiondate'] = pd.to_datetime(t0['transactiondate'])
 
 t0['month'] = t0['transactiondate'].dt.month
@@ -151,7 +151,7 @@ x_test = properties.drop(test_columns_to_drop, axis=1)
 logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shape,)))
 
 # train_df = train_df[abs(train_df.logerror) < outlier_limit]
-train_df = train_df[train_df > lower_limit and train_df < upper_limit]
+train_df = train_df[(train_df.logerror > lower_limit) & (train_df.logerror < upper_limit)]
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
 # todo figure out how to do this only once
 train_columns_to_drop = ['parcelid', 'logerror', 'transactiondate'] + additional_columns_to_drop
