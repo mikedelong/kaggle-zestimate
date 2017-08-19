@@ -51,12 +51,11 @@ if do_data_cleanup:
     properties['fireplacecnt'] = properties['fireplacecnt'].apply(lambda x: 0 if np.isnan(x) else x).astype(float)
 
     # drop a duplicate column that Zillow doesn't use
-    properties = properties.drop(['bathroomcnt'],axis=1)
+    properties = properties.drop(['bathroomcnt'], axis=1)
 
     if False:
         properties['haspool'] = properties["poolcnt"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
         properties = properties.drop(['poolcnt'], axis=1)
-
 
 do_consolidate_columns = False
 if do_consolidate_columns:
@@ -87,20 +86,32 @@ if do_consolidate_columns:
         ['finishedsquarefeet6', 'finishedsquarefeet12', 'finishedsquarefeet13', 'finishedsquarefeet15',
          'finishedsquarefeet50'], axis=1)
 
-do_sqrt = True
+do_sqrt = False
 if do_sqrt:
-    properties['calculatedfinishedfeet'] = properties['calculatedfinishedsquarefeet'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties['calculatedfinishedfeet'] = properties['calculatedfinishedsquarefeet'].apply(
+        lambda x: np.sqrt(x)).astype(float)
     properties = properties.drop(['calculatedfinishedsquarefeet'], axis=1)
 
+    properties['finishedfeet6'] = properties['finishedsquarefeet6'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties = properties.drop(['finishedsquarefeet6'], axis=1)
     properties['finishedfeet12'] = properties['finishedsquarefeet12'].apply(lambda x: np.sqrt(x)).astype(float)
     properties = properties.drop(['finishedsquarefeet12'], axis=1)
+    properties['finishedfeet13'] = properties['finishedsquarefeet13'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties = properties.drop(['finishedsquarefeet13'], axis=1)
+    properties['finishedfeet15'] = properties['finishedsquarefeet15'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties = properties.drop(['finishedsquarefeet15'], axis=1)
+    properties['finishedfeet50'] = properties['finishedsquarefeet50'].apply(lambda x: np.sqrt(x)).astype(float)
+    properties = properties.drop(['finishedsquarefeet50'], axis=1)
 
 # drop out outliers
 outlier_limit = 0.36
+lower_limit = -0.36
+upper_limit = 0.37
 
 properties_copy = properties.copy(deep=True)
 t0 = train.merge(properties_copy, how='left', on='parcelid')
-t0 = t0[abs(t0.logerror) < outlier_limit]
+# t0 = t0[abs(t0.logerror) < outlier_limit]
+t0 = t0[t0.logerror < upper_limit and t0 > lower_limit]
 t0['transactiondate'] = pd.to_datetime(t0['transactiondate'])
 
 t0['month'] = t0['transactiondate'].dt.month
@@ -139,7 +150,8 @@ x_test = properties.drop(test_columns_to_drop, axis=1)
 # shape
 logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shape,)))
 
-train_df = train_df[abs(train_df.logerror) < outlier_limit]
+# train_df = train_df[abs(train_df.logerror) < outlier_limit]
+train_df = train_df[train_df > lower_limit and train_df < upper_limit]
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
 # todo figure out how to do this only once
 train_columns_to_drop = ['parcelid', 'logerror', 'transactiondate'] + additional_columns_to_drop
@@ -165,7 +177,7 @@ xgboost_parameters = {
     'objective': 'reg:linear',
     'seed': random_seed,
     'silent': 1,
-    'subsample': 0.875 # was 0.7
+    'subsample': 0.875  # was 0.7
 }
 best_xgboost_parameters = xgboost_parameters.copy()
 best_error = sys.maxint
@@ -236,7 +248,7 @@ f_score = model.get_fscore()
 importance = sorted(f_score.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (ascending): %s' % importance)
 logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
-insignificant_features = set([item[0] for item in f_score.items()]).symmetric_difference( set(list(x_train)))
+insignificant_features = set([item[0] for item in f_score.items()]).symmetric_difference(set(list(x_train)))
 logger.debug('here are the insignificant features: %s' % sorted(list(insignificant_features)))
 output_pickle_file = './xgboost_reduced.pickle'
 with open(output_pickle_file, 'wb') as outfile_fp:
