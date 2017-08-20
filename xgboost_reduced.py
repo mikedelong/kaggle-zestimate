@@ -106,7 +106,7 @@ if do_sqrt:
 # drop out outliers
 outlier_limit = 0.36
 lower_limit = -0.36
-upper_limit = 0.37
+upper_limit = 0.385
 
 properties_copy = properties.copy(deep=True)
 t0 = train.merge(properties_copy, how='left', on='parcelid')
