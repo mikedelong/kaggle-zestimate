@@ -53,6 +53,11 @@ if do_data_cleanup:
     # drop a duplicate column that Zillow doesn't use
     properties = properties.drop(['bathroomcnt'], axis=1)
 
+    # drop one of an apparently identical pair of columns
+    if False:
+        properties = properties.drop(['fips'], axis=1)
+        properties = properties.drop(['regionidcounty'], axis=1)
+
     if False:
         properties['haspool'] = properties["poolcnt"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
         properties = properties.drop(['poolcnt'], axis=1)
