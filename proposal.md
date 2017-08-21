@@ -67,12 +67,10 @@ Also we will produce other charts and diagrams that would help the lay reader un
 
 Outline of project design
 -------------------------
-
-
-    The project's domain background — the field of research where the project is derived;
-    A problem statement — a problem being investigated for which a solution will be defined;
-    The datasets and inputs — data or inputs being used for the problem;
-    A solution statement — a the solution proposed for the problem given;
-    A benchmark model — some simple or historical model or result to compare the defined solution to;
-    A set of evaluation metrics — functional representations for how the solution can be measured;
-    An outline of the project design — how the solution will be developed and results obtained.
+For this project we will
+* Acquire the data from the Kaggle website
+* Clean up the data to remove outliers and cope with missing data as appropriate
+* Build and train a model
+* Produce many submissions for the Zillow Prize
+* Produce documentation of a leaderboard score that is better than the baseline model
+* Produce a report that discusses the engineering decisions we made and the conclusions we drew
