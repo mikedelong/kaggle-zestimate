@@ -41,6 +41,7 @@ Datasets and inputs
 We have two data files as input:
 * A training set of properties and home features for 2016: 2985217 properties and 58 features.
 * A training set of transactions for 2016: 90275 transactions, including sale prices and dates.
+
 The properties are all from three counties in California: Los Angeles, Orange, and Ventura that sold in 2016. The training data has a full set of transactions (dates and prices) from before October 15, 2016 and some transactions after October 15, 2016.
 
 The competition artifacts also include a data dictionary and a sample submission.
@@ -51,10 +52,18 @@ We will use one or more models to predict the log-error of the Zestimates.
 
 Benchmark model
 ---------------
+Because this is an open Kaggle competition we have available to us more than one baseline model. Oleg Panichev has published three different baseline models:
+* A simple mean model
+* A brute force model
+* A brute force model with a monthly seasonality correction.
+
+The best of these has a mean absolute error of about 6.53%.
 
 Evaluation metrics
 ------------------
-We will produce a result that qualifies for the leaderboard. Alternately, we will do something that we can verify directly.
+We will produce a result that qualifies for the leaderboard and that produces a score that is better than the best of the baseline models. It is worth noting that the best score on the public leaderboard as of this date is about 6.402%, so the margins here are pretty slim.
+
+Also we will produce other charts and diagrams that would help the lay reader understand some aspects of what the model is doing. The details of these have yet to be determined.
 
 Outline of project design
 -------------------------
