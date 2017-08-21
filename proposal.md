@@ -19,6 +19,18 @@ Because real estate transaction data is public information, there will be a thre
 
 Domain background
 -----------------
+For most people who own their own house their house will be one of the largest investment decisions they will ever make. Historically when a house is put up for sale the asking price is justified by looking at a handful of "comparables," determined during the real estate appraisal process. The traditional five factors for determining a comparable are
+* Conditions of sale
+* Financing Conditions
+* Market Conditions
+* Locational comparability
+* Physical comparability
+
+These five factors are typically presented indirectly; instead the seller's agent presents MLS listings for a handful of properties and the reader is left to imagine what light they actually shed on the seller's property. When a potential buyer is looking at a package consisting of an asking price and a list of comparables it is difficult to see what impact each factor has on the asking price.
+
+Comparables are also relatively illiquid: they do not tell us what the asking price would have been a year ago, or more importantly what a reasonable asking price would be a year from now.
+
+One alternative to a short list of comparables is the Zillow Estimate (Zestimate), which uses a proprietary machine learning algorithm to estimate the final sale price based (mostly) on publicly available information.
 
 Problem statement
 -----------------
