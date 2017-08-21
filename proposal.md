@@ -28,7 +28,7 @@ Comparables are also relatively illiquid: they do not tell us what the asking pr
 
 One alternative to a short list of comparables is the Zillow Estimate (Zestimate), which uses a proprietary machine learning algorithm to estimate the final sale price based (mostly) on publicly available information. Of the five factors listed above, Zestimates focus mostly on locational and physical comparability. The assumption that we can depend entirely on public information will allow us to give an estimate for the sale price at any time, and the price should be fairly liquid, meaning that each time we update the model based on new information (e.g. tax assessments, sale prices) we can update the Zestimate.
 
-It is worth noting that the Zestimate represents a big step forward in empowering buyers and sellers in what is generally an opaque and even frightening life experience, because Zestimates are available for any property, because they are fairly good predictions of the final sale price, and because they are available at no cost to the public. 
+It is worth noting that the Zestimate represents a big step forward in empowering buyers and sellers in what is generally an opaque and even frightening life experience, because Zestimates are available for any property, because they are fairly good predictions of the final sale price, and because they are available at no cost to the public.
 
 Of course the other factors listed above do not really appear in our model: if we do not have explicit features for condition of sale, financing conditions, or market conditions then we are not explicitly capturing whatever they contribute to the sale price. It is open for discussion how and whether sale prices capture these factors, or even if Zestimates do the same thing that comparables do.
 
@@ -36,7 +36,13 @@ Also, there are vagaries of the sales process that impact the final sale price t
 
 Problem statement
 -----------------
-Given a set of inputs we are looking for the log-error between the Zillow estimate of the sale price (the Zestimate) and the actual sale price, where the log-error is the log of the Zestimate minus the log of the actual sale price. We are ultimately looking for the log-error for Fall 2017, for which the data is not yet available (because the period of interest is still in the future).
+Given a set of inputs we are looking for the log-error (or the log-residual-error) of the Zestimate, which is the log-error is the log of the Zestimate minus the log of the actual sale price. This log-error will always be nonzero; over the lifetime of Zestimates Zillow has reduced the median margin of error from approximately 14% to approximately 5%.
+
+Zillow is holding a contest on Kaggle to improve Zestimates; the contest consists of two rounds: a public round and a private round. Only the top 100 contestants from the public round will go through to the private round.
+
+For the public round we are looking to minimize the mean absolute error between the predicted log error and the actual log error. For each property we predict the log error for each of up to six periods: each month in the last quarter of the calendar year (October, November, and December) for 2016 and 2017. If a property had no transaction for that month then the property is ignored for that period and does not contribute to the overall score.
+
+At the present time we are looking just for the log-error for Fall 2016, since Fall 2017 is in the future so its transactions are not available.
 
 Datasets and inputs
 -------------------
