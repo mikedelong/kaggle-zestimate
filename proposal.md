@@ -59,15 +59,18 @@ Data fields
 
 Solution statement
 ------------------
+We will use one or more models to predict the log-error of the Zestimates
 
 Benchmark model
 ---------------
 
 Evaluation metrics
 ------------------
+We will produce a result that qualifies for the leaderboard. Alternately, we will do something that we can verify directly.
 
 Outline of project design
 -------------------------
+
 
     The project's domain background — the field of research where the project is derived;
     A problem statement — a problem being investigated for which a solution will be defined;
