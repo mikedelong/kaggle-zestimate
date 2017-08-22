@@ -46,6 +46,8 @@ The properties are all from three counties in California: Los Angeles, Orange, a
 
 The competition artifacts also include a data dictionary and a sample submission.
 
+All of these files are available at the Zillow Prize data page: https://www.kaggle.com/c/zillow-prize-1/data
+
 Solution statement
 ------------------
 We will use one or more models to predict the log-error of the Zestimates.

@@ -1,15 +1,16 @@
 import logging
 import operator
+import pickle
+import sys
 import time
+from datetime import datetime
 
 import numpy as np
 import pandas as pd
 import xgboost as xgb
-from sklearn.preprocessing import LabelEncoder
+from matplotlib import pyplot as plt
 from sklearn.metrics import mean_absolute_error
-from datetime import datetime
-
-import sys
+from sklearn.preprocessing import LabelEncoder
 
 start_time = time.time()
 # set up logging
@@ -43,12 +44,26 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
+do_data_cleanup = True
+if do_data_cleanup:
+    properties['hasbasement'] = properties["basementsqft"].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
+    properties['fireplacecnt'] = properties['fireplacecnt'].apply(lambda x: 0 if np.isnan(x) else x).astype(float)
+
+    # drop a duplicate column that Zillow doesn't use
+    properties = properties.drop(['bathroomcnt'], axis=1)
+
 # drop out outliers
 outlier_limit = 0.36
+lower_limit = -0.36
+upper_limit = 0.375
 
 properties_copy = properties.copy(deep=True)
 t0 = train.merge(properties_copy, how='left', on='parcelid')
-t0 = t0[abs(t0.logerror) < outlier_limit]
+if False:
+    t0 = t0[abs(t0.logerror) < outlier_limit]
+else:
+    t0 = t0[(t0.logerror < upper_limit) & (t0.logerror > lower_limit)]
+
 t0['transactiondate'] = pd.to_datetime(t0['transactiondate'])
 
 t0['month'] = t0['transactiondate'].dt.month
@@ -59,7 +74,6 @@ t6 = t1.logerror.values
 t7 = t6.shape
 
 t8 = t1.drop(['logerror', 'transactiondate'], axis=1)
-# t8_columns = t8.columns
 t2 = t0[t0['month'] >= 10]
 t5 = t2.shape
 t12 = t2.logerror.values
@@ -87,7 +101,11 @@ x_test = properties.drop(test_columns_to_drop, axis=1)
 # shape
 logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shape,)))
 
-train_df = train_df[abs(train_df.logerror) < outlier_limit]
+if False:
+    train_df = train_df[abs(train_df.logerror) < outlier_limit]
+else:
+    train_df = train_df[(train_df.logerror > lower_limit) & (train_df.logerror < upper_limit)]
+
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
 # todo figure out how to do this only once
 train_columns_to_drop = ['parcelid', 'logerror', 'transactiondate'] + additional_columns_to_drop
@@ -121,14 +139,14 @@ xgb_boost_rounds = 1200  # was 1000
 # cross-validation
 cross_validation_nfold = 5
 for eta in [0.0252, 0.0255, 0.257]:
-    for subsample in [0.65, 0.7, 0.75]:
-        for alpha in [0.0, 0.05, 0.1]:
-            xgboost_parameters['alpha'] = alpha
+    for subsample in [0.7, 0.725, 0.75, 0.775, 0.785, 0.8]:
+        for max_depth in [6, 7, 8, 9]:
+            xgboost_parameters['max_depth'] = max_depth
             xgboost_parameters['eta'] = eta
             xgboost_parameters['subsample'] = subsample
             logger.debug('xgboost parameters: %s' % xgboost_parameters)
 
-            cv_result_small = xgb.cv(xgboost_parameters,t9,
+            cv_result_small = xgb.cv(xgboost_parameters, t9,
                                      early_stopping_rounds=30,
                                      nfold=cross_validation_nfold,
                                      num_boost_round=xgb_boost_rounds,
@@ -143,10 +161,13 @@ for eta in [0.0252, 0.0255, 0.257]:
 
             error_result = mean_absolute_error(t12, predictions_small)
             logger.debug('mean absolute error from small model: %.6f' % error_result)
+            logger.debug('iterate data: %.3f %.3f %d %.4f %.3f %d: %d %.7f' %
+                         (lower_limit, upper_limit, cross_validation_nfold, eta, subsample, max_depth,
+                          actual_small_boost_rounds, error_result))
             if error_result < best_error:
                 best_error = error_result
-                best_xgboost_parameters['alpha'] = alpha
                 best_xgboost_parameters['eta'] = eta
+                best_xgboost_parameters['max_depth'] = max_depth
                 best_xgboost_parameters['subsample'] = subsample
                 logger.debug('switching eta to %.3f, subsample to %.3f' % (eta, subsample))
 logger.debug('after iteration through several parameter candidates the best parameters are %s' %
@@ -188,14 +209,49 @@ output_columns = output.columns.tolist()
 output = output[output_columns[-1:] + output_columns[:-1]]
 logger.debug('our submission file has %d rows (should be 18232?)' % len(output))
 
+make_submission = False
+use_gzip_compression = True
 submission_prefix = 'zestimate'
 output_filename = '{}{}.csv'.format(submission_prefix, datetime.now().strftime('%Y%m%d_%H%M%S'))
-logger.debug('writing submission to %s' % output_filename)
-output.to_csv(output_filename, index=False, float_format='%.4f')
+if use_gzip_compression:
+    output_filename += '.gz'
+    if make_submission:
+        logger.debug('writing submission to %s' % output_filename)
+        output.to_csv(output_filename, index=False, float_format='%.4f', compression='gzip')
+else:
+    if make_submission:
+        logger.debug('writing submission to %s' % output_filename)
+        output.to_csv(output_filename, index=False, float_format='%.4f')
 
-importance = model.get_fscore()
-importance = sorted(importance.items(), key=operator.itemgetter(1))
+f_score = model.get_fscore()
+importance = sorted(f_score.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (ascending): %s' % importance)
+logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
+insignificant_features = set([item[0] for item in f_score.items()]).symmetric_difference(set(list(x_train)))
+logger.debug('here are the insignificant features: %s' % sorted(list(insignificant_features)))
+output_pickle_file = './xgboost_reduced.pickle'
+with open(output_pickle_file, 'wb') as outfile_fp:
+    pickle.dump(importance, outfile_fp)
+logger.debug('wrote feature importance to %s' % output_pickle_file)
+
+features = zip(*importance)[0]
+scores = zip(*importance)[1]
+x_pos = np.arange(len(features))
+plt.figure(figsize=(16, 9))
+plt.bar(x_pos, scores, align='center')
+plt.xticks(x_pos, features, rotation='vertical')
+plt.tight_layout()
+plt.title('Feature importance')
+
+use_gzip_compression = True
+if use_gzip_compression:
+    figure_filename = output_filename.replace('.csv.gz', '.png')
+else:
+    figure_filename = output_filename.replace('.gz', '.png')
+
+make_feature_graph = True
+if make_feature_graph:
+    plt.savefig(figure_filename)
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
