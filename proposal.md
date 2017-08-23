@@ -47,7 +47,7 @@ At the present time we are looking just for the log-error for Fall 2016, since F
 This is primarily a regression problem; our dependent variables are continuous. We have 58 independent variables, but we can put them in three broad categories:
 1. Location data, which tells us where the house is
 2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
-3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so how long
+3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so which year it became delinquent
 
 Datasets and inputs
 -------------------
@@ -60,6 +60,73 @@ The properties are all from three counties in California: Los Angeles, Orange, a
 The competition artifacts also include a data dictionary and a sample submission.
 
 All of these files are available at the Zillow Prize data page: https://www.kaggle.com/c/zillow-prize-1/data
+
+The raw or native features are as follows:
+
+|Feature	|Description|
+|---|---|
+|airconditioningtypeid	 |Type of cooling system present in the home (if any)|
+|architecturalstyletypeid	 |Architectural style of the home (i.e. ranch, colonial, split-level, etc…)|
+|basementsqft	 |Finished living area below or partially below ground level|
+|bathroomcn	 |Number of bathrooms in home including fractional bathrooms|
+|bedroomcnt	 |Number of bedrooms in home|
+|buildingqualitytypeid	 |Overall assessment of condition of the building from best (lowest) to worst (highest)|
+|buildingclasstypeid	|The building framing type (steel frame, wood frame, concrete/brick) |
+|calculatedbathnbr	 |Number of bathrooms in home including fractional bathroom|
+|decktypeid	|Type of deck (if any) present on parcel|
+|threequarterbathnbr	 |Number of 3/4 bathrooms in house (shower + sink + toilet)|
+|finishedfloor1squarefeet	 |Size of the finished living area on the first (entry) floor of the home|
+|calculatedfinishedsquarefeet	 |Calculated total finished living area of the home |
+|finishedsquarefeet6	|Base unfinished and finished area|
+|finishedsquarefeet12	|Finished living area|
+|finishedsquarefeet13	|Perimeter  living area|
+|finishedsquarefeet15	|Total area|
+|finishedsquarefeet50	 |Size of the finished living area on the first (entry) floor of the home|
+|fips	 |Federal Information Processing Standard code |
+|fireplacecnt	 |Number of fireplaces in a home (if any)|
+|fireplaceflag	 |Is a fireplace present in this home? |
+|fullbathcnt	 |Number of full bathrooms (sink, shower + bathtub, and toilet) present in home|
+|garagecarcnt	 |Total number of garages on the lot including an attached garage|
+|garagetotalsqft	 |Total number of square feet of all garages on lot including an attached garage|
+|hashottuborspa	 |Does the home have a hot tub or spa|
+|heatingorsystemtypeid	 |Type of home heating system|
+|latitude	 |Latitude of the middle of the parcel multiplied by 10e6|
+|longitude	 |Longitude of the middle of the parcel multiplied by 10e6|
+|lotsizesquarefeet	 |Area of the lot in square feet|
+|numberofstories	 |Number of stories or levels the home has|
+|parcelid	 |Unique identifier for parcels (lots) |
+|poolcnt	 |Number of pools on the lot (if any)|
+|poolsizesum	 |Total square footage of all pools on property|
+|pooltypeid10	 |Spa or Hot Tub|
+|pooltypeid2	 |Pool with Spa/Hot Tub|
+|pooltypeid7	 |Pool without hot tub|
+|propertycountylandusecode	 |County land use code i.e. its zoning at the county level|
+|propertylandusetypeid	 |Type of land use the property is zoned for|
+|propertyzoningdesc	 |Description of the allowed land uses (zoning) for that property|
+|rawcensustractandblock	 |Census tract and block ID combined - also contains blockgroup assignment by extension|
+|censustractandblock	 |Census tract and block ID combined - also contains blockgroup assignment by extension|
+|regionidcounty	|County in which the property is located|
+|regionidcity	 |City in which the property is located (if any)|
+|regionidzip	 |Zip code in which the property is located|
+|regionidneighborhood	|Neighborhood in which the property is located|
+|roomcnt	 |Total number of rooms in the principal residence|
+|storytypeid	 |Type of floors in a multi-story house (i.e. basement and main level, split-level, attic, etc.).|  
+|typeconstructiontypeid	 |What type of construction material was used to construct the home|
+|unitcnt	 |Number of units the structure is built into (i.e. 2 = duplex, 3 = triplex, etc...)|
+|yardbuildingsqft17	|Patio in  yard|
+|yardbuildingsqft26	|Storage shed/building in yard|
+|yearbuilt	 |The Year the principal residence was built |
+|taxvaluedollarcnt	|The total tax assessed value of the parcel|
+|structuretaxvaluedollarcnt	|The assessed value of the built structure on the parcel|
+|landtaxvaluedollarcnt	|The assessed value of the land area of the parcel|
+|taxamount	| The total property tax assessed for that assessment year|
+|assessmentyear	| The year of the property tax assessment |
+|taxdelinquencyflag	| Property taxes for this parcel are past due as of 2015|
+|taxdelinquencyyear	| Year for which the unpaid property taxes were due |
+
+    How many examples are there in the dataset that you'll be using? Is it the full 2985217 properties or only the 90275 that sold?
+    How will you split the data into training/validation/testing sets?
+
 
 Solution statement
 ------------------
