@@ -26,11 +26,13 @@ Of course the other factors listed above do not really appear in our model: if w
 
 Also, there are vagaries of the sales process that impact the final sale price that are very difficult to capture and will introduce noise (variance, or errors) into the model: e.g. how busy and therefore how engaged is the seller's agent; how motivated are the buyers and sellers; etc.
 
+Zillow would like to improve Zestimates if at all possible, and for that reason they have sponsored the Kaggle Zillow Prize (https://www.kaggle.com/c/zillow-prize-1) and provided data to use as part of the prize contest (https://www.kaggle.com/c/zillow-prize-1/data).
+
 This is a problem that is an obvious candidate for a machine learning solution. In fact the Udacity Machine Learning nanodegree includes a project that uses a linear regression to model Boston home prices. This is also a problem with academic solutions at the undergraduate or occasionally graduate level. Academic solutions to this problem include:
 * Jingyi Mu, Fang Wu, and Aihua Zhang: Housing Value Forecasting Based on Machine Learning Methods, where the authors solve the problem using support vector machines and partial least squares: https://www.hindawi.com/journals/aaa/2014/648047/
 * Aaron Ng: Machine Learning for a London Housing Price Prediction Mobile Application, where the author used a host of regression methods: http://www.doc.ic.ac.uk/~mpd37/theses/2015_beng_aaron-ng.pdf
 * Nissan Pow, Emil Janulewicz, and Liu (Dave) Liu: Applied Machine Learning Project 4 Prediction of real estate property prices in Montreal, where the authors use Support Vector Regression, k-Nearest Neighbors (kNN), and Random Forest Regression (RFR), along with a kNN/RFR ensemble method: http://rl.cs.mcgill.ca/comp598/fall2014/comp598_submission_99.pdf
- 
+
 
 Problem statement
 -----------------
