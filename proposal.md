@@ -44,6 +44,11 @@ For the public round we are looking to minimize the mean absolute error between 
 
 At the present time we are looking just for the log-error for Fall 2016, since Fall 2017 is in the future so its transactions are not available.
 
+This is primarily a regression problem; our dependent variables are continuous. We have 58 independent variables, but we can put them in three broad categories:
+1. Location data, which tells us where the house is
+2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
+3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so how long
+
 Datasets and inputs
 -------------------
 We have two data files as input:
