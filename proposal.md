@@ -144,7 +144,7 @@ We will use one or more models to predict the log-error of the Zestimates.
 Benchmark model
 ---------------
 Because this is an open Kaggle competition we have available to us more than one baseline model. Oleg Panichev has published three different baseline models:
-* A simple mean model
+* A simple mean model; this model just takes the mean of the log-error in the training data and uses it as the guess for the log-error of all of the test data.
 * A brute force model
 * A brute force model with a monthly seasonality correction.
 
