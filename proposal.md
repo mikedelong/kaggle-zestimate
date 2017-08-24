@@ -152,11 +152,9 @@ The best of these has a mean absolute error of about 6.53%.
 
 Evaluation metrics
 ------------------
-We will produce a result that qualifies for the leaderboard and that produces a score that is better than the best of the baseline models. It is worth noting that the best score on the public leaderboard as of this date is about 6.402%, so the margins here are pretty slim.
+We will produce a result that qualifies for the leaderboard and that produces a score that is better than the best of the baseline models. For the leaderboard submissions are evaluated based on the mean absolute error of the predicted log error as compared to the actual log error, or *log(error) = log(Zestimate) - log(Actual sale price)*. It is worth noting that the best score on the public leaderboard as of this date is about 6.402%, so the margins here are pretty slim.
 
 Also we will produce other charts and diagrams that would help the lay reader understand some aspects of what the model is doing. The details of these have yet to be determined.
-
-  You've noted it elsewhere, but please be sure to note that you'll be using log-error as the metric for this study. You should also provide a formula for how this is calculated.
 
 Outline of project design
 -------------------------
