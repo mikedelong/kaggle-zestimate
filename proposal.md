@@ -68,7 +68,7 @@ The raw or native features are as follows:
 |airconditioningtypeid	 |Type of cooling system present in the home (if any)|
 |architecturalstyletypeid	 |Architectural style of the home (i.e. ranch, colonial, split-level, etc…)|
 |basementsqft	 |Finished living area below or partially below ground level|
-|bathroomcn	 |Number of bathrooms in home including fractional bathrooms|
+|bathroomcnt	 |Number of bathrooms in home including fractional bathrooms|
 |bedroomcnt	 |Number of bedrooms in home|
 |buildingqualitytypeid	 |Overall assessment of condition of the building from best (lowest) to worst (highest)|
 |buildingclasstypeid	|The building framing type (steel frame, wood frame, concrete/brick) |
@@ -123,6 +123,12 @@ The raw or native features are as follows:
 |assessmentyear	| The year of the property tax assessment |
 |taxdelinquencyflag	| Property taxes for this parcel are past due as of 2015|
 |taxdelinquencyyear	| Year for which the unpaid property taxes were due |
+
+We will be attempting to use all of these features, with some exceptions:
+* We know that the parcel ID is unique to each property and is useful only for identifying properties that sold multiple times during the period of interest, so we will use it to filter out multiple-sale properties during the data cleansing process but we will not use it to train the model.
+* Some features may be redundant: e.g. the census tract and block are identified in two features; the FIPS and the county ID represent the same concept; the bathroom count and the calculated bath number are nearly identical: one of them is a raw number, while the other represents Zillow's adjusted amount. We will need to pick through these on a case-by-case basis
+* If our chosen model can give us a feature significance we may filter out features it considers insignificant for performance reasons.
+
 
     How many examples are there in the dataset that you'll be using? Is it the full 2985217 properties or only the 90275 that sold?
     How will you split the data into training/validation/testing sets?
