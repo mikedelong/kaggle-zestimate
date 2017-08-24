@@ -161,15 +161,16 @@ Outline of project design
 For this project we will
 * Acquire the data from the Kaggle website
 * Clean up the data to remove outliers and cope with missing data as appropriate
+  * Inferring missing data where appropriate
+  * Parsing transaction dates into month and year and possibly day of the week
+  * Adding one-hot encoding for Boolean data
+  * Consolidating columns where appropriate
+  * Removing redundant data
 * Build and train a model
+  * As much as I would like to do so I don't think simple linear regression will do much here, because the data is a mix of Boolean, enumeration, and real values. I'd love to use a linear regression model because the coefficients it produces are easy to explain
+  * I will probably be using some sort of boosting and bagging or ensemble model; these models seem to do well with data of mixed types and with missing data.
+  * I will probably need to do grid search to explore the model hyperparameter space
+  * I will also probably need to iterate based on model outputs, such as validation data error metrics and feature importance metrics
 * Produce many submissions for the Zillow Prize
 * Produce documentation of a leaderboard score that is better than the baseline model
 * Produce a report that discusses the engineering decisions we made and the conclusions we drew
-
-
-
-  When you resubmit, please add a bit more detail to your workflow. For instance, what are all of the steps that you'll take during pre-processing? What are all of the supervised learning techniques you plan on trying? How will you tune your supervised learning algorithms?
-
-  Please be detailed. We realize that you can't possibly know what will work...you haven't done the project yet! However, if you tell us exactly what you'd like to do, we can significantly help you to refine your approach. We can also save you lots of time by keeping you away from approaches that are unlikely to work.
-
-  Keep in mind that this is a great opportunity to bounce lots of ideas off of the reviewers. You can get feedback without putting in much work. It's also a good idea to build some backup plans into your workflow in case something doesn't work. You don't want to get stuck...
