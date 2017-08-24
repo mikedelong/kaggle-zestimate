@@ -145,12 +145,10 @@ Benchmark model
 ---------------
 Because this is an open Kaggle competition we have available to us more than one baseline model. Oleg Panichev has published three different baseline models:
 * A simple mean model; this model just takes the mean of the log-error in the training data and uses it as the guess for the log-error of all of the test data.
-* A brute force model
-* A brute force model with a monthly seasonality correction.
+* A brute force model; this model is a single-value model just like the mean model above, but it chooses among a range of plausible guesses the one that minimizes the mean absolute error.
+* A brute force model with a monthly seasonality correction; this brute force variant separates the transactions according to their month of sale and chooses among a range of plausible guesses the one that minimizes the mean absolute error over the test data for that month.
 
 The best of these has a mean absolute error of about 6.53%.
-
-  Any of these sound like they could be appropriate benchmark models. However, please provide a bit more detail about how they'll be implemented. For instance, what exactly do you mean by 'mean' model? How would this be implemented? What do you mean by 'Brute Force' in this context etc.?
 
 Evaluation metrics
 ------------------
