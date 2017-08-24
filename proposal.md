@@ -139,6 +139,8 @@ Solution statement
 ------------------
 We will use one or more models to predict the log-error of the Zestimates.
 
+  When you resubmit, please be sure to give a quick overview of the algorithms and techniques you want to try. For instance, be sure to mention any pre-processing, unsupervised, supervised or other machine learning techniques you want to try. No need to go into detail about how you'll implement them...this should just be a quick summary of your methodology.
+
 Benchmark model
 ---------------
 Because this is an open Kaggle competition we have available to us more than one baseline model. Oleg Panichev has published three different baseline models:
@@ -148,11 +150,15 @@ Because this is an open Kaggle competition we have available to us more than one
 
 The best of these has a mean absolute error of about 6.53%.
 
+  Any of these sound like they could be appropriate benchmark models. However, please provide a bit more detail about how they'll be implemented. For instance, what exactly do you mean by 'mean' model? How would this be implemented? What do you mean by 'Brute Force' in this context etc.?
+
 Evaluation metrics
 ------------------
 We will produce a result that qualifies for the leaderboard and that produces a score that is better than the best of the baseline models. It is worth noting that the best score on the public leaderboard as of this date is about 6.402%, so the margins here are pretty slim.
 
 Also we will produce other charts and diagrams that would help the lay reader understand some aspects of what the model is doing. The details of these have yet to be determined.
+
+  You've noted it elsewhere, but please be sure to note that you'll be using log-error as the metric for this study. You should also provide a formula for how this is calculated.
 
 Outline of project design
 -------------------------
@@ -163,3 +169,11 @@ For this project we will
 * Produce many submissions for the Zillow Prize
 * Produce documentation of a leaderboard score that is better than the baseline model
 * Produce a report that discusses the engineering decisions we made and the conclusions we drew
+
+
+
+  When you resubmit, please add a bit more detail to your workflow. For instance, what are all of the steps that you'll take during pre-processing? What are all of the supervised learning techniques you plan on trying? How will you tune your supervised learning algorithms?
+
+  Please be detailed. We realize that you can't possibly know what will work...you haven't done the project yet! However, if you tell us exactly what you'd like to do, we can significantly help you to refine your approach. We can also save you lots of time by keeping you away from approaches that are unlikely to work.
+
+  Keep in mind that this is a great opportunity to bounce lots of ideas off of the reviewers. You can get feedback without putting in much work. It's also a good idea to build some backup plans into your workflow in case something doesn't work. You don't want to get stuck...
