@@ -129,10 +129,11 @@ We will be attempting to use all of these features, with some exceptions:
 * Some features may be redundant: e.g. the census tract and block are identified in two features; the FIPS and the county ID represent the same concept; the bathroom count and the calculated bath number are nearly identical: one of them is a raw number, while the other represents Zillow's adjusted amount. We will need to pick through these on a case-by-case basis
 * If our chosen model can give us a feature significance we may filter out features it considers insignificant for performance reasons.
 
+We only have log-error data for 90275 properties, and we will be training with a subset of those properties, subject to:
+* Filtering on outliers; we don't want our model to reproduce the largest errors in the training data
+* Filtering on date of sale; we want to train on data that is outside the period of interest and predict the log-error for properties that sold in the period of interest.
 
-    How many examples are there in the dataset that you'll be using? Is it the full 2985217 properties or only the 90275 that sold?
-    How will you split the data into training/validation/testing sets?
-
+We will be doing some cross-validation with various folds and our test set will be the properties for which we have no transaction data, subject to some filtering for bad data.
 
 Solution statement
 ------------------
