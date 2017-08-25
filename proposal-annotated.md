@@ -151,6 +151,9 @@ Because this is an open Kaggle competition we have available to us more than one
 
 The best of these has a mean absolute error of about 6.53%.
 
+Reviewer note:
+*In scikit-learn there's also a DummyRegressor estimator that you can customize with any additional prediction strategies you want to devise yourself.*
+
 Evaluation metrics
 ------------------
 We will produce a result that qualifies for the leaderboard and that produces a score that is better than the best of the baseline models. For the leaderboard submissions are evaluated based on the mean absolute error of the predicted log error as compared to the actual log error, or *log(error) = log(Zestimate) - log(Actual sale price)*. It is worth noting that the best score on the public leaderboard as of this date is about 6.402%, so the margins here are pretty slim.
