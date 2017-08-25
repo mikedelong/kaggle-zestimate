@@ -160,6 +160,8 @@ We will produce a result that qualifies for the leaderboard and that produces a 
 
 Also we will produce other charts and diagrams that would help the lay reader understand some aspects of what the model is doing. The details of these have yet to be determined.
 
+Reviewer note: *make sure your final report also includes the actual equation for calculating MEA.*
+
 Outline of project design
 -------------------------
 For this project we will
