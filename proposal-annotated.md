@@ -91,8 +91,8 @@ The raw or native features are as follows:
 |garagetotalsqft	 |Total number of square feet of all garages on lot including an attached garage|
 |hashottuborspa	 |Does the home have a hot tub or spa|
 |heatingorsystemtypeid	 |Type of home heating system|
-|latitude	 |Latitude of the middle of the parcel multiplied by 10e6|
-|longitude	 |Longitude of the middle of the parcel multiplied by 10e6|
+|latitude	 |Latitude of the middle of the parcel multiplied by 1,000,000|
+|longitude	 |Longitude of the middle of the parcel multiplied by 1,000,000|
 |lotsizesquarefeet	 |Area of the lot in square feet|
 |numberofstories	 |Number of stories or levels the home has|
 |parcelid	 |Unique identifier for parcels (lots) |
