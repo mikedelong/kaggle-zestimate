@@ -63,6 +63,10 @@ As stated above we will be calculating the log-error of the Zestimate; we will b
 
 This choice was not open for us to make; the contest designers chose this error measure. This is a pretty reasonable choice however, because it represents a preference for minimizing the error at every point, by weighting each datapoint equally. The mean-squared error measures, by contrast, weight large errors more heavily.  
 
+https://www.kaggle.com/wiki/MeanAbsoluteError
+
+https://www.kaggle.com/wiki/RootMeanSquaredError
+
 ## II. Analysis
 _(approx. 2-4 pages)_
 
