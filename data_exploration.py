@@ -1,16 +1,9 @@
-
 import logging
-import operator
 import time
-from datetime import datetime
-
-import numpy as np
-import pandas as pd
-import xgboost as xgb
-from sklearn.preprocessing import LabelEncoder
 
 import matplotlib.pyplot as plt
-
+import numpy as np
+import pandas as pd
 
 start_time = time.time()
 # set up logging
@@ -42,36 +35,62 @@ train = train_df.merge(properties, how='left', on='parcelid')
 
 logger.debug('training data shape: %s' % (train.shape,))
 
-column_name = ['lotsizesquarefeet']
+column_name = 'lotsizesquarefeet'
 fig, ax = plt.subplots()
+logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
 train.hist(ax=ax, bins=40, column=column_name)
 # ax.set_xscale('log')
 ax.set_yscale('log')
-figure_filename = column_name[0] + '-log.png'
+figure_filename = column_name + '-log.png'
+plt.savefig(figure_filename)
+
+fig, ax = plt.subplots()
+limit = train[column_name].max()
+properties[properties[column_name] < limit].hist(ax=ax, column=column_name)
+ax.set_yscale('log')
+figure_filename = '-'.join([column_name, 'properties', 'log']) + '.png'
 plt.savefig(figure_filename)
 
 # need to use enough bins to get quarter-bath accuracy
-column_name = ['calculatedbathnbr']
+column_name ='calculatedbathnbr'
 fig, ax = plt.subplots()
-min_bath_count = train[column_name[0]].min()
-max_bath_count = train[column_name[0]].max()
+logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
+min_bath_count = train[column_name].min()
+max_bath_count = train[column_name].max()
 train.hist(ax=ax, bins=4*(max_bath_count-min_bath_count+1),column=column_name)
 ax.set_yscale('log')
-figure_filename = column_name[0] + '-log.png'
+figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
 # plt.show()
 
-# need to use enough bins to get quarter-bath accuracy
-column_name = ['bedroomcnt']
+column_name = 'bedroomcnt'
 fig, ax = plt.subplots()
-min_bath_count = train[column_name[0]].min()
-max_bath_count = train[column_name[0]].max()
-train.hist(ax=ax, bins=(max_bath_count-min_bath_count+1),column=column_name)
+logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
+quantile = 0.05
+logger.debug('at quantile level %f we have %f' % (quantile, train[column_name].quantile(quantile)))
+min_bedroom_count = train[column_name].min()
+max_bedroom_count = train[column_name].max()
+train.hist(ax=ax, bins=(max_bedroom_count-min_bedroom_count+1),column=column_name)
 ax.set_yscale('log')
-# ax.set_ylim(bottom=-100)
-# figure_filename = column_name[0] + '-log.png'
-# plt.savefig(figure_filename)
-plt.show()
+figure_filename = column_name + '-log.png'
+plt.savefig(figure_filename)
+
+column_name = 'calculatedfinishedsquarefeet'
+logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
+quantile = 0.05
+logger.debug('at quantile level %f we have %f' % (quantile, train[column_name].quantile(quantile)))
+fig, ax = plt.subplots()
+min_count = train[column_name].min()
+max_count = train[column_name].max()
+train.hist(ax=ax, bins=30,column=column_name)
+do_log = False
+if do_log:
+    ax.set_yscale('log')
+    figure_filename = column_name + '-log.png'
+else:
+    figure_filename = column_name + '.png'
+plt.savefig(figure_filename)
+# plt.show()
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
