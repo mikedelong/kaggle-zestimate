@@ -83,6 +83,27 @@ In this section, you will need to provide some form of visualization that summar
 - _Is the visualization thoroughly analyzed and discussed?_
 - _If a plot is provided, are the axes, title, and datum clearly defined?_
 
+We have three basic kinds of data: location data, property intrinsic data, and tax-related data.
+#### Location data
+
+We have data from three counties: Los Angeles, Orange, and Ventura, and we have location data in the form of latitude and longitude data for each property in our training data. If we plot the latitude and longitude for each property in the training set and color the marker by the county we get a reasonable picture of the location of each property and the county in which it is located.
+
+![](./train-latitude-longitude-fips.png )
+
+This shows us that we have some noise in the location data; in fact if we appear to have hundreds of properties in Los Angeles County (red markers) for which the locations are uncertain, to the extent that the model will think they are actually outside Los Angeles County.
+
+We see the same noise in the test data:
+
+![](./properties-latitude-longitude-fips.png )
+
+We can think of this noise in one of three ways:
+0. The FIPS data is correct and the latitude/longitude is incorrect
+1. The FIPS data is incorrect and the latitude/longitude is correct
+2. Both the FIPS data and the latitude/longitude are incorrect
+
+With the current dataset we don't have a way to distinguish among these three cases. Regardless, because the training data and the test data are distributed similarly, we are inclined to leave the noisy data in the train/test sets.
+
+
 ### Algorithms and Techniques
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
 - _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
