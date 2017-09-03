@@ -4,7 +4,6 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-
 import stateplane
 
 start_time = time.time()
@@ -34,17 +33,17 @@ train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 # test = test_df.merge(properties, on='parcelid', how='left')
 logger.debug(
-train['fips'].head(20)
+    train['fips'].head(20)
 )
 
 logger.debug(train[['latitude', 'longitude']].head(20))
 
 train['t0'] = train.apply(lambda row: stateplane.identify(
     row['longitude'] / 1000000.0,
-    row['latitude']/1000000.0,
+    row['latitude'] / 1000000.0,
     fmt='fips'), axis=1)
 logger.debug(
-train['t0'].head(20)
+    train['t0'].head(20)
 )
 logger.debug('training data shape: %s' % (train.shape,))
 
