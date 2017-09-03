@@ -32,19 +32,22 @@ train_df = pd.read_csv(training_file)
 
 train = train_df.merge(properties, how='left', on='parcelid')
 # test = test_df.merge(properties, on='parcelid', how='left')
-logger.debug(
-    train['fips'].head(20)
+
+if False:
+    logger.debug(
+        train['fips'].head(20)
+    )
+
+    logger.debug(train[['latitude', 'longitude']].head(20))
+
+    train['t0'] = train.apply(lambda row: stateplane.identify(
+        row['longitude'] / 1000000.0,
+        row['latitude'] / 1000000.0,
+        fmt='fips'), axis=1)
+    logger.debug(
+        train['t0'].head(20)
 )
 
-logger.debug(train[['latitude', 'longitude']].head(20))
-
-train['t0'] = train.apply(lambda row: stateplane.identify(
-    row['longitude'] / 1000000.0,
-    row['latitude'] / 1000000.0,
-    fmt='fips'), axis=1)
-logger.debug(
-    train['t0'].head(20)
-)
 logger.debug('training data shape: %s' % (train.shape,))
 
 # make a scatterplot of the training data
@@ -54,10 +57,24 @@ if False:
     train.plot(kind='scatter', x='latitude', y='longitude', c='fips')
 
 colors = {6037: 'red', 6059: 'blue', 6111: 'green'}
+
+column_name = 'logerror'
+quantile = 0.90
+log_error_abs_quantile = train[column_name].abs().quantile(quantile)
+logger.debug('%s: at quantile level %f we have %f' % (column_name,quantile, log_error_abs_quantile))
+outliers = train.loc[abs(train[column_name]) > log_error_abs_quantile][['latitude', 'longitude', 'fips']]
+logger.debug('outliers shape : %s', (outliers.shape,))
+fig, ax = plt.subplots()
+ax.scatter(outliers['latitude'], outliers['longitude'], c=outliers['fips'].apply(lambda x: colors[x]))
+figure_filename = 'outliers-latitude-longitude-fips.png'
+plt.savefig(figure_filename)
+logger.debug('wrote file %s' % figure_filename)
+
 fig, ax = plt.subplots()
 ax.scatter(train['latitude'], train['longitude'], c=train['fips'].apply(lambda x: colors[x]))
 figure_filename = 'train-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
+logger.debug('wrote file %s' % figure_filename)
 
 fig, ax = plt.subplots()
 t0 = properties[['latitude', 'longitude', 'fips']].dropna()
@@ -65,6 +82,7 @@ logger.debug('if we filter out n/as from the test data we have %s' % (t0.shape,)
 ax.scatter(t0['latitude'], t0['longitude'], c=t0['fips'].apply(lambda x: colors[x]))
 figure_filename = 'properties-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
+logger.debug('wrote file %s' % figure_filename)
 
 column_name = 'lotsizesquarefeet'
 fig, ax = plt.subplots()
