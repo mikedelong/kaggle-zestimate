@@ -59,6 +59,16 @@ if False:
 colors = {6037: 'red', 6059: 'blue', 6111: 'green'}
 
 column_name = 'logerror'
+# visualize the error
+fig, ax = plt.subplots()
+ax.scatter(range(train.shape[0]), np.sort(train.logerror.values))
+plt.ylabel(column_name)
+# plt.show()
+figure_filename = 'train-error-scatter.png'
+plt.savefig(figure_filename)
+logger.debug('wrote file %s' % figure_filename)
+
+# visualize the percentile of the error on a map
 quantile = 0.99
 log_error_abs_quantile = train[column_name].abs().quantile(quantile)
 logger.debug('%s: at quantile level %f we have %f' % (column_name,quantile, log_error_abs_quantile))
