@@ -96,7 +96,14 @@ In this section, you will need to provide some form of visualization that summar
 - _Is the visualization thoroughly analyzed and discussed?_
 - _If a plot is provided, are the axes, title, and datum clearly defined?_
 
-We have three basic kinds of data: location data, property intrinsic data, and tax-related data.
+We have three basic kinds of training data: location data, property intrinsic data, and tax-related data; and our target variable is the log-error, which we will visualize first.
+
+#### Error data
+We already suspect from the discussion above that the log-error is mostly quite small; it is probably helpful to visualize the log-error to see what the distribution actually looks like.
+
+![](./train-error-histogram.png)
+Here we see the distribution of the log-error on a linear and log scale. It is relatively easy to see that the overwhelming majority of the training data has small errors, with a few outliers.
+
 #### Location data
 
 We have data from three counties: Los Angeles, Orange, and Ventura, and we have location data in the form of latitude and longitude data for each property in our training data. If we plot the latitude and longitude for each property in the training set and color the marker by the county we get a reasonable picture of the location of each property and the county in which it is located.
