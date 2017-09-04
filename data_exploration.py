@@ -59,7 +59,7 @@ if False:
 colors = {6037: 'red', 6059: 'blue', 6111: 'green'}
 
 column_name = 'logerror'
-quantile = 0.90
+quantile = 0.99
 log_error_abs_quantile = train[column_name].abs().quantile(quantile)
 logger.debug('%s: at quantile level %f we have %f' % (column_name,quantile, log_error_abs_quantile))
 outliers = train.loc[abs(train[column_name]) > log_error_abs_quantile][['latitude', 'longitude', 'fips']]
