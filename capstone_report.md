@@ -77,6 +77,19 @@ In this section, you will be expected to analyze the data you are using for the 
 - _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
 - _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
 
+If we simply ask pandas to describe the log-error we see this:
+
+|name|value|
+|---|---|
+|count|    90275|
+|mean|         0.011457|
+|std|          0.161079|
+|min|         -4.605|
+|25%|         -0.0253|
+|50%|          0.006|
+|75%|          0.0392|
+|max|          4.737|
+
 ### Exploratory Visualization
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant characteristic or feature about the dataset or input data?_
