@@ -77,6 +77,79 @@ In this section, you will be expected to analyze the data you are using for the 
 - _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
 - _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
 
+We have two data files as input:
+* A training set of properties and home features for 2016: 2985217 properties and 58 features.
+* A training set of transactions for 2016: 90275 transactions, including sale prices and dates.
+
+The properties are all from three counties in California: Los Angeles, Orange, and Ventura that sold in 2016. The training data has a full set of transactions (dates and prices) from before October 15, 2016 and some transactions after October 15, 2016.
+
+The competition artifacts also include a data dictionary and a sample submission.
+
+All of these files are available at the Zillow Prize data page: https://www.kaggle.com/c/zillow-prize-1/data
+
+The raw or native features are as follows:
+
+|Feature	|Description|
+|---|---|
+|airconditioningtypeid	 |Type of cooling system present in the home (if any)|
+|architecturalstyletypeid	 |Architectural style of the home (i.e. ranch, colonial, split-level, etc…)|
+|basementsqft	 |Finished living area below or partially below ground level|
+|bathroomcnt	 |Number of bathrooms in home including fractional bathrooms|
+|bedroomcnt	 |Number of bedrooms in home|
+|buildingqualitytypeid	 |Overall assessment of condition of the building from best (lowest) to worst (highest)|
+|buildingclasstypeid	|The building framing type (steel frame, wood frame, concrete/brick) |
+|calculatedbathnbr	 |Number of bathrooms in home including fractional bathroom|
+|decktypeid	|Type of deck (if any) present on parcel|
+|threequarterbathnbr	 |Number of 3/4 bathrooms in house (shower + sink + toilet)|
+|finishedfloor1squarefeet	 |Size of the finished living area on the first (entry) floor of the home|
+|calculatedfinishedsquarefeet	 |Calculated total finished living area of the home |
+|finishedsquarefeet6	|Base unfinished and finished area|
+|finishedsquarefeet12	|Finished living area|
+|finishedsquarefeet13	|Perimeter  living area|
+|finishedsquarefeet15	|Total area|
+|finishedsquarefeet50	 |Size of the finished living area on the first (entry) floor of the home|
+|fips	 |Federal Information Processing Standard code |
+|fireplacecnt	 |Number of fireplaces in a home (if any)|
+|fireplaceflag	 |Is a fireplace present in this home? |
+|fullbathcnt	 |Number of full bathrooms (sink, shower + bathtub, and toilet) present in home|
+|garagecarcnt	 |Total number of garages on the lot including an attached garage|
+|garagetotalsqft	 |Total number of square feet of all garages on lot including an attached garage|
+|hashottuborspa	 |Does the home have a hot tub or spa|
+|heatingorsystemtypeid	 |Type of home heating system|
+|latitude	 |Latitude of the middle of the parcel multiplied by 1,000,000|
+|longitude	 |Longitude of the middle of the parcel multiplied by 1,000,000|
+|lotsizesquarefeet	 |Area of the lot in square feet|
+|numberofstories	 |Number of stories or levels the home has|
+|parcelid	 |Unique identifier for parcels (lots) |
+|poolcnt	 |Number of pools on the lot (if any)|
+|poolsizesum	 |Total square footage of all pools on property|
+|pooltypeid10	 |Spa or Hot Tub|
+|pooltypeid2	 |Pool with Spa/Hot Tub|
+|pooltypeid7	 |Pool without hot tub|
+|propertycountylandusecode	 |County land use code i.e. its zoning at the county level|
+|propertylandusetypeid	 |Type of land use the property is zoned for|
+|propertyzoningdesc	 |Description of the allowed land uses (zoning) for that property|
+|rawcensustractandblock	 |Census tract and block ID combined - also contains blockgroup assignment by extension|
+|censustractandblock	 |Census tract and block ID combined - also contains blockgroup assignment by extension|
+|regionidcounty	|County in which the property is located|
+|regionidcity	 |City in which the property is located (if any)|
+|regionidzip	 |Zip code in which the property is located|
+|regionidneighborhood	|Neighborhood in which the property is located|
+|roomcnt	 |Total number of rooms in the principal residence|
+|storytypeid	 |Type of floors in a multi-story house (i.e. basement and main level, split-level, attic, etc.).|  
+|typeconstructiontypeid	 |What type of construction material was used to construct the home|
+|unitcnt	 |Number of units the structure is built into (i.e. 2 = duplex, 3 = triplex, etc...)|
+|yardbuildingsqft17	|Patio in  yard|
+|yardbuildingsqft26	|Storage shed/building in yard|
+|yearbuilt	 |The Year the principal residence was built |
+|taxvaluedollarcnt	|The total tax assessed value of the parcel|
+|structuretaxvaluedollarcnt	|The assessed value of the built structure on the parcel|
+|landtaxvaluedollarcnt	|The assessed value of the land area of the parcel|
+|taxamount	| The total property tax assessed for that assessment year|
+|assessmentyear	| The year of the property tax assessment |
+|taxdelinquencyflag	| Property taxes for this parcel are past due as of 2015|
+|taxdelinquencyyear	| Year for which the unpaid property taxes were due |
+
 If we simply ask pandas to describe the log-error we see this:
 
 |name|value|
@@ -86,9 +159,11 @@ If we simply ask pandas to describe the log-error we see this:
 |std|          0.161079|
 |min|         -4.605|
 |25%|         -0.0253|
-|50%|          0.006|
+|50% (median)|          0.006|
 |75%|          0.0392|
 |max|          4.737|
+
+This suggests that the log-error is mostly clustered pretty tightly around the mean; also, the mean is greater than the median, so we have a little bit of positive skew.
 
 ### Exploratory Visualization
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
@@ -102,7 +177,7 @@ We have three basic kinds of training data: location data, property intrinsic da
 We already suspect from the discussion above that the log-error is mostly quite small; it is probably helpful to visualize the log-error to see what the distribution actually looks like.
 
 ![](./train-error-histogram.png)
-Here we see the distribution of the log-error on a linear and log scale. It is relatively easy to see that the overwhelming majority of the training data has small errors, with a few outliers.
+Here we see the distribution of the log-error on a linear and log scale. It is relatively easy to see that the overwhelming majority of the training data has small errors, with a few outliers, and that the log-error has just a little positive skew.
 
 #### Location data
 
@@ -123,6 +198,14 @@ We can think of this noise in one of three ways:
 
 With the current dataset we don't have a way to distinguish among these three cases. Regardless, because the training data and the test data are distributed similarly, we are inclined to leave the noisy data in the train/test sets.
 
+Finally, we're especially interested in whether there is an obvious geographic component to the log-error outliers, so we take the properties with the most extreme 0.5% of the log-error values and map and color them as above:
+
+![](./outliers-latitude-longitude-fips.png)
+
+For the most part they look like a small random sample of the data.
+
+#### Property intrinsic data
+In this section we will look at intrinsic properties of the property.
 
 ### Algorithms and Techniques
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
