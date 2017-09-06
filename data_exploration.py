@@ -68,8 +68,11 @@ figure_filename = 'train-error-scatter.png'
 plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
+# describe the error
+logger.debug(train[column_name].describe())
+
 # visualize the percentile of the error on a map
-quantile = 0.99
+quantile = 0.995
 log_error_abs_quantile = train[column_name].abs().quantile(quantile)
 logger.debug('%s: at quantile level %f we have %f' % (column_name,quantile, log_error_abs_quantile))
 outliers = train.loc[abs(train[column_name]) > log_error_abs_quantile][['latitude', 'longitude', 'fips']]
@@ -77,6 +80,16 @@ logger.debug('outliers shape : %s', (outliers.shape,))
 fig, ax = plt.subplots()
 ax.scatter(outliers['latitude'], outliers['longitude'], c=outliers['fips'].apply(lambda x: colors[x]))
 figure_filename = 'outliers-latitude-longitude-fips.png'
+plt.savefig(figure_filename)
+logger.debug('wrote file %s' % figure_filename)
+
+fig, axes = plt.subplots(ncols=2)
+logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
+bins=40
+train.hist(ax=axes[0], bins=bins, column=column_name)
+train.hist(ax=axes[1], bins=bins, column=column_name)
+axes[1].set_yscale('log')
+figure_filename = 'train-error-histogram.png'
 plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
@@ -94,6 +107,22 @@ figure_filename = 'properties-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
+column_name = 'taxvaluedollarcnt'
+fig, ax = plt.subplots()
+logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
+train.hist(ax=ax, bins=40, column=column_name)
+ax.set_yscale('log')
+figure_filename = column_name + '-log.png'
+plt.savefig(figure_filename)
+
+fig, ax = plt.subplots()
+limit = train[column_name].max()
+properties[properties[column_name] < limit].hist(ax=ax, bins=40, column=column_name)
+ax.set_yscale('log')
+figure_filename = '-'.join([column_name, 'properties', 'log']) + '.png'
+plt.savefig(figure_filename)
+
+# todo combine these into a single plot
 column_name = 'lotsizesquarefeet'
 fig, ax = plt.subplots()
 logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
@@ -134,6 +163,7 @@ ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
 
+# todo combine these into a single plot(?)
 column_name = 'calculatedfinishedsquarefeet'
 logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
 quantile = 0.05
