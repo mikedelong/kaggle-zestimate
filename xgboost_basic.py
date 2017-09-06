@@ -3,12 +3,11 @@ import operator
 import time
 from datetime import datetime
 
+import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
-
-import matplotlib.pyplot as plt
 
 start_time = time.time()
 # set up logging
@@ -111,7 +110,7 @@ xgboost_parameters = {
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
     'lambda': 1.0,  # default is 1.0
-    'max_depth': 7,  # todo try a range of values from 3 to 7 (?) default = 6
+    'max_depth': 3,  # todo try a range of values from 3 to 7 (?) default = 6
     'objective': 'reg:linear',
     'seed': random_seed,
     'silent': 1,
@@ -154,7 +153,7 @@ output_columns = output.columns.tolist()
 output = output[output_columns[-1:] + output_columns[:-1]]
 logger.debug('our submission file has %d rows (should be 18232?)' % len(output))
 
-make_submission = True
+make_submission = False
 use_gzip_compression = True
 submission_prefix = 'zestimate'
 output_filename = '{}{}.csv'.format(submission_prefix, datetime.now().strftime('%Y%m%d_%H%M%S'))
@@ -177,7 +176,7 @@ scores = zip(*importance)[1]
 x_pos = np.arange(len(features))
 plt.figure(figsize=(16, 9))
 plt.bar(x_pos, scores, align='center')
-plt.xticks(x_pos, features, rotation=45)  # was 'vertical'
+plt.xticks(x_pos, features, rotation='vertical')  # was 'vertical'
 plt.tight_layout()
 plt.ylabel('Feature importance')
 
