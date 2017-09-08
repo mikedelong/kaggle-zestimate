@@ -33,6 +33,16 @@ train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 # test = test_df.merge(properties, on='parcelid', how='left')
 
+# let's get some unique values:
+# for column_name in ['fips', 'regionidcity', 'regionidcounty', 'regionidzip', 'regionidneighborhood', 'storytypeid']:
+#     logger.debug('%s : %s' % (column_name, train[column_name].unique()))
+
+for column_name in ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
+                    'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear']:
+    logger.debug('%s : %s' % (column_name, train[column_name].unique()))
+for column_name in list(train):
+    logger.debug('%s : %d' % (column_name, len(train[column_name].unique())))
+
 if False:
     logger.debug(
         train['fips'].head(20)
@@ -108,18 +118,20 @@ plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
 column_name = 'taxvaluedollarcnt'
-fig, ax = plt.subplots()
+fig, axes = plt.subplots(ncols=2)
 logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
-train.hist(ax=ax, bins=40, column=column_name)
-ax.set_yscale('log')
-figure_filename = column_name + '-log.png'
+train.hist(ax=axes[0], bins=50, column=column_name)
+train.hist(ax=axes[1], bins=50, column=column_name)
+axes[1].set_yscale('log')
+figure_filename = column_name + '-train.png'
 plt.savefig(figure_filename)
 
-fig, ax = plt.subplots()
+fig, axes = plt.subplots(ncols=2)
 limit = train[column_name].max()
-properties[properties[column_name] < limit].hist(ax=ax, bins=40, column=column_name)
-ax.set_yscale('log')
-figure_filename = '-'.join([column_name, 'properties', 'log']) + '.png'
+properties[properties[column_name] < limit].hist(ax=axes[0], bins=50, column=column_name)
+properties[properties[column_name] < limit].hist(ax=axes[1], bins=50, column=column_name)
+axes[1].set_yscale('log')
+figure_filename = '-'.join([column_name, 'properties']) + '.png'
 plt.savefig(figure_filename)
 
 # todo combine these into a single plot
