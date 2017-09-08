@@ -41,7 +41,6 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
-
 do_consolidate_columns = True
 if do_consolidate_columns:
     # Columns to be consolidated
@@ -58,6 +57,17 @@ logger.debug(list(properties))
 # properties['transactiondate'] = pd.to_datetime(properties['transactiondate'])
 # properties['Month'] = properties['transactiondate'].dt.month
 # properties['dayofweek'] = properties['transactiondate'].dt.dayofweek
+
+# one-hot for counties instead of FIPS
+fips_map = {6037: 'Los Angeles', 6059: 'Orange', 6111: 'Ventura'}
+properties['fips'].replace(fips_map, inplace=True)
+fips_one_hot = pd.get_dummies(properties['fips'])
+fips_one_hot = fips_one_hot.drop([1.0], axis=1)
+# properties = properties.drop(['fips', 'regionidcounty'], axis=1)
+# properties = properties.join(fips_one_hot)
+properties = properties.drop(
+    ['fips', 'regionidcounty', 'assessmentyear', 'fireplaceflag', 'hashottuborspa', 'poolcnt', 'pooltypeid10',
+     'pooltypeid2', 'pooltypeid7', 'storytypeid', 'typeconstructiontypeid'], axis=1)
 
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
@@ -105,7 +115,7 @@ xgboost_parameters = {
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
     'lambda': 1.0,  # default is 1.0
-    'max_depth': 3,  # todo try a range of values from 3 to 7 (?) default = 6
+    'max_depth': 8,  # todo try a range of values from 3 to 7 (?) default = 6
     'objective': 'reg:linear',
     'seed': random_seed,
     'silent': 1,
@@ -148,7 +158,7 @@ output_columns = output.columns.tolist()
 output = output[output_columns[-1:] + output_columns[:-1]]
 logger.debug('our submission file has %d rows (should be 18232?)' % len(output))
 
-make_submission = False
+make_submission = True
 use_gzip_compression = True
 submission_prefix = 'zestimate'
 output_filename = '{}{}.csv'.format(submission_prefix, datetime.now().strftime('%Y%m%d_%H%M%S'))
@@ -165,6 +175,13 @@ else:
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (descending): %s' % importance)
+
+f_score = model.get_fscore()
+importance = sorted(f_score.items(), key=operator.itemgetter(1), reverse=True)
+logger.debug('features by importance (ascending): %s' % importance)
+logger.debug('of %d features the model considers %d of them significant' % (len(list(x_train)), len(importance)))
+insignificant_features = set([item[0] for item in f_score.items()]).symmetric_difference(set(list(x_train)))
+logger.debug('here are the insignificant features: %s' % sorted(list(insignificant_features)))
 
 features = zip(*importance)[0]
 scores = zip(*importance)[1]
