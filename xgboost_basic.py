@@ -41,15 +41,6 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
-# do some data cleansing before we proceed
-do_one_hot_cleanup = False
-if do_one_hot_cleanup:
-    properties['hasairconditioning'] = properties['airconditioningtypeid'].apply(
-        lambda x: 0 if np.isnan(x) else 1).astype(float)
-    properties['hasbasement'] = properties['basementsqft'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-    properties['hashottuborspa'] = properties['hashottuborspa'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-    properties['haspool'] = properties['poolcnt'].apply(lambda x: 0 if np.isnan(x) else 1).astype(float)
-    properties = properties.drop(['airconditioningtypeid', 'basementsqft', 'hashottuborspa', 'poolcnt'], axis=1)
 
 do_consolidate_columns = True
 if do_consolidate_columns:
@@ -73,12 +64,10 @@ train_df = train.merge(properties, how='left', on='parcelid')
 
 logger.debug(list(train_df))
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
-x_train = train_df.drop(['parcelid', 'logerror', 'transactiondate'], axis=1)
+x_train = train_df.drop(['parcelid', 'logerror', 'transactiondate', 'taxvaluedollarcnt'], axis=1)
 logger.debug(list(x_train))
 logger.debug('dropping parcel ID from properties to get test data.')
 
-# additional_columns_to_drop = ['typeconstructiontypeid', 'regionidcounty', 'architecturalstyletypeid',
-#                               'threequarterbathnbr']
 additional_columns_to_drop = []
 test_columns_to_drop = ['parcelid'] + additional_columns_to_drop
 x_test = properties.drop(test_columns_to_drop, axis=1)
@@ -87,6 +76,12 @@ logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shap
 
 # drop out outliers
 outlier_limit = 0.36
+lower_limit = -0.36
+upper_limit = 0.375
+if False:
+    train_df = train_df[abs(train_df.logerror) < outlier_limit]
+else:
+    train_df = train_df[(train_df.logerror < upper_limit) & (train_df.logerror > lower_limit)]
 
 train_df = train_df[abs(train_df.logerror) < outlier_limit]
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
@@ -169,7 +164,7 @@ else:
 
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
-logger.debug('features by importance (ascending): %s' % importance)
+logger.debug('features by importance (descending): %s' % importance)
 
 features = zip(*importance)[0]
 scores = zip(*importance)[1]
