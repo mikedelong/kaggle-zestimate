@@ -115,7 +115,7 @@ xgboost_parameters = {
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
     'lambda': 1.0,  # default is 1.0
-    'max_depth': 8,  # todo try a range of values from 3 to 7 (?) default = 6
+    'max_depth': 7,  # todo try a range of values from 3 to 7 (?) default = 6
     'objective': 'reg:linear',
     'seed': random_seed,
     'silent': 1,
