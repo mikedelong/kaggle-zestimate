@@ -88,6 +88,8 @@ logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shap
 outlier_limit = 0.36
 lower_limit = -0.36
 upper_limit = 0.375
+lower_limit = -0.4
+upper_limit = 0.4
 if False:
     train_df = train_df[abs(train_df.logerror) < outlier_limit]
 else:
