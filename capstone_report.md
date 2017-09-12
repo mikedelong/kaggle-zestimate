@@ -218,7 +218,7 @@ In this section, you will need to discuss the algorithms and techniques you inte
 - _Are the techniques to be used thoroughly discussed and justified?_
 - _Is it made clear how the input data or datasets will be handled by the algorithms and techniques chosen?_
 
-We are using a gradient boosted random forest model called XGBoost. XGBoost is a general-purpose supervised learning method that uses gradient boosting and decision trees; it is also called a tree ensemble model. It was developed by Tianqi Chen and Carlos Guestrin at the University of Washington, and the original paper announcing the model was published in June 2016 [Chen and Guestrin](https://arxiv.org/pdf/1603.02754.pdf)
+We are using a gradient boosted random forest model called XGBoost. XGBoost is a general-purpose supervised learning method that uses gradient boosting and decision trees; it is also called a tree ensemble model. It was developed by Tianqi Chen and Carlos Guestrin at the University of Washington, and the original  [paper](https://arxiv.org/pdf/1603.02754.pdf) describing the model was published in June 2016.
 
 ### Benchmark
 In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
