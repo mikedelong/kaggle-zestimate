@@ -72,6 +72,11 @@ properties = properties.drop(
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
 
+# drop duplicate transactions from the training data
+if True:
+    duplicate_rows = train_df[train_df['parcelid'].duplicated()]['parcelid'].index
+    train_df = train_df.drop(duplicate_rows)
+
 logger.debug(list(train_df))
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
 x_train = train_df.drop(['parcelid', 'logerror', 'transactiondate', 'taxvaluedollarcnt'], axis=1)
@@ -112,13 +117,14 @@ random_seed = 1
 xgboost_parameters = {
     'alpha': 0.0,
     'base_score': y_mean,
+    'booster' : 'gbtree', # 'gbtree',
     'colsample_bytree': 1.0,
     'eta': 0.025,  # todo try a range of values from 0 to 0.1 (?) default = 0.03 # was 0.003
     'eval_metric': 'mae',
     'gamma': 0.0,  # default is 0
-    'lambda': 1.0,  # default is 1.0
-    'max_depth': 8,  # todo try a range of values from 3 to 7 (?) default = 6
-    'objective': 'reg:linear',
+    'lambda': 1.05,  # default is 1.0
+    'max_depth': 7,  # todo try a range of values from 3 to 7 (?) default = 6
+    'objective':  'reg:linear',
     'seed': random_seed,
     'silent': 1,
     'subsample': 0.7
