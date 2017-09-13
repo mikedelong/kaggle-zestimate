@@ -30,6 +30,12 @@ train_df = pd.read_csv(training_file)
 # test_df = pd.read_csv("../input/sample_submission.csv")
 # test_df = test_df.rename(columns={'ParcelId': 'parcelid'})
 
+# before we go any further let's check how many parcels sold more than once
+t0 = train_df['parcelid'].count()
+t1 = len(train_df['parcelid'].unique())
+
+logger.debug('we have %d parcels of which %d are unique' % (t0, t1))
+
 train = train_df.merge(properties, how='left', on='parcelid')
 # test = test_df.merge(properties, on='parcelid', how='left')
 
