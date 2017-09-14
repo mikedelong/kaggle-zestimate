@@ -1,15 +1,12 @@
 # Machine Learning Engineer Nanodegree
 ## Capstone Project
 Mike DeLong
+
 September 31st, 2017
 
 ## I. Definition
-_(approx. 1-2 pages)_
 
 ### Project Overview
-In this section, look to provide a high-level overview of the project in layman’s terms. Questions to ask yourself when writing this section:
-- _Has an overview of the project been provided, such as the problem domain, project origin, and related datasets or input data?_
-- _Has enough background information been given so that an uninformed reader would understand the problem domain and following problem statement?_
 
 For most people who own their house it will be one of the largest investment decisions they will ever make. Historically when a house is put up for sale the asking price is justified by looking at a handful of comparable properties, or "comparables," determined during the real estate appraisal process.
 
@@ -53,8 +50,6 @@ This is primarily a regression problem; our dependent variables are continuous. 
 2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
 3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so which year it became delinquent
 
-
-
 ### Metrics
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
 - _Are the metrics you’ve chosen to measure the performance of your models clearly discussed and defined?_
@@ -66,6 +61,7 @@ This choice was not open for us to make; the contest designers chose this error 
 https://www.kaggle.com/wiki/MeanAbsoluteError
 
 https://www.kaggle.com/wiki/RootMeanSquaredError
+
 
 ## II. Analysis
 _(approx. 2-4 pages)_
@@ -220,6 +216,11 @@ In this section, you will need to discuss the algorithms and techniques you inte
 
 We are using a gradient boosted random forest model called XGBoost. XGBoost is a general-purpose supervised learning method that uses gradient boosting and decision trees; it is also called a tree ensemble model. It was developed by Tianqi Chen and Carlos Guestrin at the University of Washington, and the original  [paper](https://arxiv.org/pdf/1603.02754.pdf) describing the model was published in June 2016.
 
+1. Define the algorithm
+2. Justify its use based on the characteristics of the problem and the problem domain
+3. Include algorithm variables and parameters
+4.
+
 ### Benchmark
 In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
 - _Has some result or value been provided that acts as a benchmark for measuring performance?_
@@ -238,6 +239,15 @@ In this section, all of your preprocessing steps will need to be clearly documen
 There are a lot of nulls in this data.
 There is a lot of categorical data.
 If we had just numerical data we could probably scale the data as appropriate and use a linear regression model.
+
+The preprocessing steps are as follows:
+1. Combine the transaction data in the training data with properties to get a complete set of labeled training data
+1. Replace Nan values with zero as appropriate; anywhere this is unambiguous
+2. Remove duplicate sales
+3. Remove outliers in the training data
+4. Do one train/predict cycle with the model to identify features that are not significant and remove these features.
+
+We also need to transform the
 
 ### Implementation
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
