@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import xgboost as xgb
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MinMaxScaler
 
 start_time = time.time()
 # set up logging
@@ -29,9 +30,24 @@ properties = pd.read_csv(properties_file, dtype={
     'propertycountylandusecode': np.str,
     'propertyzoningdesc': np.str}, converters={
     'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
+
+
 logger.debug('loading training data from %s' % training_file)
 train = pd.read_csv(training_file)
 logger.debug('data load complete.')
+
+# todo retry after removing taxamount scaling
+do_min_max_scaling = True
+if do_min_max_scaling:
+    min_max_scaler = MinMaxScaler(copy=True)
+    scaled_columns = list()
+    for column_name in ['latitude', 'longitude']:
+        logger.debug('column %s has %d null values' % (column_name, properties[column_name].isnull().sum()))
+        mean_value = properties[column_name].mean()
+        logger.debug('column %s has mean value %.2f' % (column_name, mean_value))
+        properties[column_name].fillna(inplace=True, value=mean_value)
+        scaled_columns.append(column_name)
+    properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
 # encode labels as integers as needed
 for c in properties.columns:
@@ -40,6 +56,7 @@ for c in properties.columns:
         label_encoder = LabelEncoder()
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
+
 
 do_consolidate_columns = False
 if do_consolidate_columns:
@@ -53,6 +70,10 @@ if do_consolidate_columns:
     properties = properties.drop(['yardbuildingsqft17', 'yardbuildingsqft26'], axis=1)
 
 logger.debug(list(properties))
+
+logger.debug(properties['latitude'].isnull().sum())
+logger.debug(properties['longitude'].isnull().sum())
+
 
 # properties['transactiondate'] = pd.to_datetime(properties['transactiondate'])
 # properties['Month'] = properties['transactiondate'].dt.month
