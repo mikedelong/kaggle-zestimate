@@ -41,7 +41,7 @@ for c in properties.columns:
         label_encoder.fit(list(properties[c].values))
         properties[c] = label_encoder.transform(list(properties[c].values))
 
-do_consolidate_columns = True
+do_consolidate_columns = False
 if do_consolidate_columns:
     # Columns to be consolidated
     properties['yardbuildingsqft17'] = properties['yardbuildingsqft17'].apply(lambda x: 0 if np.isnan(x) else x).astype(
@@ -180,6 +180,7 @@ else:
         logger.debug('writing submission to %s' % output_filename)
         output.to_csv(output_filename, index=False, float_format='%.4f')
 
+# model.importance()
 importance = model.get_fscore()
 importance = sorted(importance.items(), key=operator.itemgetter(1), reverse=True)
 logger.debug('features by importance (descending): %s' % importance)
