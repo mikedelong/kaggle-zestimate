@@ -28,8 +28,12 @@ properties = pd.read_csv(properties_file, dtype={
     'propertyzoningdesc': np.str}, converters={
     'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
 
+train_df = pd.read_csv(training_file)
+
+train = train_df.merge(properties, how='left', on='parcelid')
+
 # todo add training data and make a PNG
-na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties)}
+na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if column_name not in ['parcelid']}
 x_pos = np.arange(len(na_counts))
 plt.figure(figsize=(16, 9))
 # let's sort these values before we graph them
@@ -41,7 +45,24 @@ plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
-plt.show()
+# plt.show()
+figure_filename = 'properties-na-counts.png'
+plt.savefig(figure_filename)
+
+na_counts = {column_name: train[column_name].isnull().sum() for column_name in list(train) if column_name not in ['parcelid']}
+x_pos = np.arange(len(na_counts) - 2)
+plt.figure(figsize=(16, 9))
+# let's use the ordering from the properties
+sorted_values = [na_counts[key] for key in sorted_keys]
+plt.bar(x_pos, sorted_values, align='center')
+plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
+plt.yscale('log', nonposy='clip')
+plt.tight_layout()
+plt.ylabel('Column N/A counts')
+# plt.show()
+figure_filename = 'train-na-counts.png'
+plt.savefig(figure_filename)
+
 
 logger.debug(properties['latitude'].isnull().sum())
 logger.debug(properties['longitude'].isnull().sum())
@@ -53,24 +74,14 @@ if False:
     properties['longitude'].fillna(inplace=True, value=properties_longitude_mean)
     properties[['latitude', 'longitude']] = min_max_scaler.fit_transform(properties[['latitude', 'longitude']])
 
-train_df = pd.read_csv(training_file)
-# test_df = pd.read_csv("../input/sample_submission.csv")
-# test_df = test_df.rename(columns={'ParcelId': 'parcelid'})
 
 # before we go any further let's check how many parcels sold more than once
 t0 = train_df['parcelid'].count()
 t1 = len(train_df['parcelid'].unique())
-
 logger.debug('we have %d parcels of which %d are unique' % (t0, t1))
-
 t2 = train_df['parcelid'].duplicated(keep=False)
 t3 = train_df[t2 == True].sort_values(['parcelid'])
-# logger.debug('duplicated: %s' % t3)
 logger.debug('duplicated shape: %s' % (t3.shape,))
-
-train = train_df.merge(properties, how='left', on='parcelid')
-# test = test_df.merge(properties, on='parcelid', how='left')
-
 t4 = train[train['parcelid'].duplicated()]['parcelid'].index
 t5 = t4.shape
 t6 = train.drop(t4)
