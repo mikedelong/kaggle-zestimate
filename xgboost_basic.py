@@ -48,7 +48,7 @@ if do_min_max_scaling:
         scaled_columns.append(column_name)
     properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
-# encode labels as integers as needed
+# encode labels as needed
 do_na_fill = False
 if do_na_fill:
     for c in properties.columns:
