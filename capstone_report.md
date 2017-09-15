@@ -41,6 +41,7 @@ In this section, you will want to clearly define the problem that you are trying
 - _Have you thoroughly discussed how you will attempt to solve the problem?_
 - _Is an anticipated solution clearly defined? Will the reader understand what results you are looking for?_
 
+
 For the public round we are looking to minimize the mean absolute error between the predicted log error and the actual log error. For each property we predict the log error for each of up to six periods: each month in the last quarter of the calendar year (October, November, and December) for 2016 and 2017. If a property had no transaction for that month then the property is ignored for that period and does not contribute to the overall score.
 
 At the present time we are looking just for the log-error for Fall 2016, since Fall 2017 is in the future so its transactions are not available.
@@ -49,6 +50,14 @@ This is primarily a regression problem; our dependent variables are continuous. 
 1. Location data, which tells us where the house is
 2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
 3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so which year it became delinquent
+
+To accomplish this we will
+1. Load the known transaction data and properties data and combine them to create a training set
+2. Investigate the dataset to see if there is skew in the data and look at the proportion of missing data
+3. Clean up and transform the data, removing outliers, scaling and normalizing as appropriate
+4. Train a model
+5. Predict the log-error for all of the properties in the test set
+
 
 ### Metrics
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
@@ -168,6 +177,18 @@ In this section, you will need to provide some form of visualization that summar
 - _If a plot is provided, are the axes, title, and datum clearly defined?_
 
 We have three basic kinds of training data: location data, property intrinsic data, and tax-related data; and our target variable is the log-error, which we will visualize first.
+
+#### Missing data
+We would like to know what the distribution of missing data looks like. In particular we want to know if there are properties where we have a substantial number of cases where we have features that are always present in the training data but are missing in the test data. We do this by adding bar charts for the number of missing values (NAs) for each feature.
+
+![](./properties-na-counts.png)
+
+This first chart shows the counts for all the properties on a log scale. Not surprisingly we have essentially three kinds of features: features that are rare (to the left), features that are common (to the right), and features that are in between (in the middle).
+
+Missing data for training data:
+![](./train-na-counts.png)
+
+We have kept the columns in the same order, so it is relatively easy to see the differences in the distribution of missing data: in particular it is clear that we have more than ten features for which we have no missing data in the training data set, but we have a fair number of properties in the test data set that have this data missing.
 
 #### Error data
 We already suspect from the discussion above that the log-error is mostly quite small; it is probably helpful to visualize the log-error to see what the distribution actually looks like.
