@@ -36,7 +36,6 @@ logger.debug('loading training data from %s' % training_file)
 train = pd.read_csv(training_file)
 logger.debug('data load complete.')
 
-# todo retry after removing taxamount scaling
 do_min_max_scaling = True
 if do_min_max_scaling:
     min_max_scaler = MinMaxScaler(copy=True)
@@ -50,13 +49,20 @@ if do_min_max_scaling:
     properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
 # encode labels as integers as needed
-for c in properties.columns:
-    properties[c] = properties[c].fillna(1)
-    if properties[c].dtype == 'object':
+do_na_fill = False
+if do_na_fill:
+    for c in properties.columns:
+        properties[c] = properties[c].fillna(1)
+        if properties[c].dtype == 'object':
+            label_encoder = LabelEncoder()
+            label_encoder.fit(list(properties[c].values))
+            properties[c] = label_encoder.transform(list(properties[c].values))
+else:
+    for column_name in ['propertycountylandusecode', 'propertyzoningdesc']:
+        properties[column_name] = properties[column_name].fillna('ZZZ')
         label_encoder = LabelEncoder()
-        label_encoder.fit(list(properties[c].values))
-        properties[c] = label_encoder.transform(list(properties[c].values))
-
+        label_encoder.fit(list(properties[column_name].values))
+        properties[column_name] = label_encoder.transform(list(properties[column_name].values))
 
 do_consolidate_columns = False
 if do_consolidate_columns:
@@ -83,7 +89,8 @@ logger.debug(properties['longitude'].isnull().sum())
 fips_map = {6037: 'Los Angeles', 6059: 'Orange', 6111: 'Ventura'}
 properties['fips'].replace(fips_map, inplace=True)
 fips_one_hot = pd.get_dummies(properties['fips'])
-fips_one_hot = fips_one_hot.drop([1.0], axis=1)
+if do_na_fill:
+    fips_one_hot = fips_one_hot.drop([1.0], axis=1)
 # properties = properties.drop(['fips', 'regionidcounty'], axis=1)
 # properties = properties.join(fips_one_hot)
 properties = properties.drop(
