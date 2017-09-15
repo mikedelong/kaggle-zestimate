@@ -6,6 +6,7 @@ import numpy as np
 import pandas as pd
 import stateplane
 from sklearn.preprocessing import MinMaxScaler
+import operator
 
 start_time = time.time()
 # set up logging
@@ -26,6 +27,21 @@ properties = pd.read_csv(properties_file, dtype={
     'propertycountylandusecode': np.str,
     'propertyzoningdesc': np.str}, converters={
     'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
+
+# todo add training data and make a PNG
+na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties)}
+x_pos = np.arange(len(na_counts))
+plt.figure(figsize=(16, 9))
+# let's sort these values before we graph them
+sorted_counts = sorted(na_counts.items(), key=operator.itemgetter(1), reverse=True)
+sorted_values = [item[1] for item in sorted_counts]
+plt.bar(x_pos, sorted_values, align='center')
+sorted_keys = [item[0] for item in sorted_counts]
+plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
+plt.yscale('log', nonposy='clip')
+plt.tight_layout()
+plt.ylabel('Column N/A counts')
+plt.show()
 
 logger.debug(properties['latitude'].isnull().sum())
 logger.debug(properties['longitude'].isnull().sum())
