@@ -45,7 +45,6 @@ plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
-# plt.show()
 figure_filename = 'properties-na-counts.png'
 plt.savefig(figure_filename)
 
@@ -59,7 +58,6 @@ plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
-# plt.show()
 figure_filename = 'train-na-counts.png'
 plt.savefig(figure_filename)
 
@@ -104,8 +102,10 @@ logger.debug('%s' % train['latitude'].describe())
 #     logger.debug('%s : %s' % (column_name, train[column_name].unique()))
 
 for column_name in ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
-                    'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear']:
-    logger.debug('%s : %s' % (column_name, train[column_name].unique()))
+                    'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
+                    'propertycountylandusecode', 'propertyzoningdesc']:
+    uniques  = train[column_name].unique()
+    logger.debug('%s : %d :: %s' % (column_name, len(uniques), uniques))
 for column_name in list(train):
     logger.debug('%s : %d' % (column_name, len(train[column_name].unique())))
 
