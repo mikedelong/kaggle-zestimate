@@ -1,4 +1,5 @@
 import logging
+import operator
 import time
 
 import matplotlib.pyplot as plt
@@ -6,7 +7,6 @@ import numpy as np
 import pandas as pd
 import stateplane
 from sklearn.preprocessing import MinMaxScaler
-import operator
 
 start_time = time.time()
 # set up logging
@@ -33,7 +33,8 @@ train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 
 # todo add training data and make a PNG
-na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if column_name not in ['parcelid']}
+na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
+             column_name not in ['parcelid']}
 x_pos = np.arange(len(na_counts))
 plt.figure(figsize=(16, 9))
 # let's sort these values before we graph them
@@ -41,26 +42,26 @@ sorted_counts = sorted(na_counts.items(), key=operator.itemgetter(1), reverse=Tr
 sorted_values = [item[1] for item in sorted_counts]
 plt.bar(x_pos, sorted_values, align='center')
 sorted_keys = [item[0] for item in sorted_counts]
-plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
+plt.xticks(x_pos, sorted_keys, rotation='vertical')
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
 figure_filename = 'properties-na-counts.png'
 plt.savefig(figure_filename)
 
-na_counts = {column_name: train[column_name].isnull().sum() for column_name in list(train) if column_name not in ['parcelid']}
+na_counts = {column_name: train[column_name].isnull().sum() for column_name in list(train) if
+             column_name not in ['parcelid']}
 x_pos = np.arange(len(na_counts) - 2)
 plt.figure(figsize=(16, 9))
 # let's use the ordering from the properties
 sorted_values = [na_counts[key] for key in sorted_keys]
 plt.bar(x_pos, sorted_values, align='center')
-plt.xticks(x_pos, sorted_keys, rotation='vertical')  # was 'vertical'
+plt.xticks(x_pos, sorted_keys, rotation='vertical')
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
 figure_filename = 'train-na-counts.png'
 plt.savefig(figure_filename)
-
 
 logger.debug(properties['latitude'].isnull().sum())
 logger.debug(properties['longitude'].isnull().sum())
@@ -71,7 +72,6 @@ if False:
     properties['latitude'].fillna(inplace=True, value=properties_latitude_mean)
     properties['longitude'].fillna(inplace=True, value=properties_longitude_mean)
     properties[['latitude', 'longitude']] = min_max_scaler.fit_transform(properties[['latitude', 'longitude']])
-
 
 # before we go any further let's check how many parcels sold more than once
 t0 = train_df['parcelid'].count()
@@ -91,9 +91,11 @@ logger.debug('train-longitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
 logger.debug('train-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
     train['latitude'].mean(), train['latitude'].std(), train['latitude'].min(), train['latitude'].max()))
 logger.debug('properties-longitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
-    properties['longitude'].mean(), properties['longitude'].std(), properties['longitude'].min(), properties['longitude'].max()))
+    properties['longitude'].mean(), properties['longitude'].std(), properties['longitude'].min(),
+    properties['longitude'].max()))
 logger.debug('properties-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
-    properties['latitude'].mean(), properties['latitude'].std(), properties['latitude'].min(), properties['latitude'].max()))
+    properties['latitude'].mean(), properties['latitude'].std(), properties['latitude'].min(),
+    properties['latitude'].max()))
 
 logger.debug('%s' % train['latitude'].describe())
 
@@ -104,7 +106,7 @@ logger.debug('%s' % train['latitude'].describe())
 for column_name in ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
                     'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
                     'propertycountylandusecode', 'propertyzoningdesc']:
-    uniques  = train[column_name].unique()
+    uniques = train[column_name].unique()
     logger.debug('%s : %d :: %s' % (column_name, len(uniques), uniques))
 for column_name in list(train):
     logger.debug('%s : %d' % (column_name, len(train[column_name].unique())))
@@ -214,16 +216,17 @@ fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_1 = 'latitude'
 logger.debug('train %s min: %d max: %d' % (column_name_1, train[column_name_1].min(), train[column_name_1].max()))
 train.hist(ax=axes[0, 0], bins=50, column=column_name_1)
-logger.debug('properties %s min: %d max: %d' % (column_name_1, properties[column_name_1].min(), properties[column_name_1].max()))
+logger.debug(
+    'properties %s min: %d max: %d' % (column_name_1, properties[column_name_1].min(), properties[column_name_1].max()))
 properties.hist(ax=axes[1, 0], bins=50, column=column_name_1)
 column_name_2 = 'longitude'
 logger.debug('train %s min: %d max: %d' % (column_name_2, train[column_name_2].min(), train[column_name_2].max()))
 train.hist(ax=axes[0, 1], bins=50, column=column_name_2)
-logger.debug('properties %s min: %d max: %d' % (column_name_2, properties[column_name_2].min(), properties[column_name_2].max()))
+logger.debug(
+    'properties %s min: %d max: %d' % (column_name_2, properties[column_name_2].min(), properties[column_name_2].max()))
 properties.hist(ax=axes[1, 1], bins=50, column=column_name_2)
-figure_filename = '-'.join([column_name_1, column_name_2, 'both'])  + '.png'
+figure_filename = '-'.join([column_name_1, column_name_2, 'both']) + '.png'
 plt.savefig(figure_filename)
-
 
 column_name = 'taxvaluedollarcnt'
 fig, axes = plt.subplots(ncols=2)
