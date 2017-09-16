@@ -86,9 +86,10 @@ if do_na_fill:
     fips_one_hot = fips_one_hot.drop([1.0], axis=1)
 # properties = properties.drop(['fips', 'regionidcounty'], axis=1)
 # properties = properties.join(fips_one_hot)
-properties = properties.drop(
-    ['fips', 'regionidcounty', 'assessmentyear', 'fireplaceflag', 'hashottuborspa', 'poolcnt', 'pooltypeid10',
-     'pooltypeid2', 'pooltypeid7', 'storytypeid', 'typeconstructiontypeid'], axis=1)
+if True:
+    properties = properties.drop(
+        ['fips', 'regionidcounty', 'assessmentyear', 'fireplaceflag', 'hashottuborspa', 'poolcnt', 'pooltypeid10',
+         'pooltypeid2', 'pooltypeid7', 'storytypeid', 'typeconstructiontypeid'], axis=1)
 
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
@@ -154,7 +155,7 @@ xgboost_parameters = {
 logger.debug('xgboost parameters: %s' % xgboost_parameters)
 xgb_boost_rounds = 1200  # was 1000
 # cross-validation
-cross_validation_nfold = 5
+cross_validation_nfold = 6 # was 5
 
 cv_result = xgb.cv(xgboost_parameters, dtrain,
                    early_stopping_rounds=25,
@@ -162,7 +163,7 @@ cv_result = xgb.cv(xgboost_parameters, dtrain,
                    num_boost_round=xgb_boost_rounds,
                    seed=random_seed,
                    show_stdv=False,
-                   verbose_eval=50)
+                   verbose_eval=5)
 actual_boost_rounds = len(cv_result)
 logger.debug('for boost we actually used %d rounds' % actual_boost_rounds)
 if False:
