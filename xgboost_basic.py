@@ -155,7 +155,7 @@ xgboost_parameters = {
 logger.debug('xgboost parameters: %s' % xgboost_parameters)
 xgb_boost_rounds = 1200  # was 1000
 # cross-validation
-cross_validation_nfold = 7 # was 6
+cross_validation_nfold = 8 # was 7
 
 cv_result = xgb.cv(xgboost_parameters, dtrain,
                    early_stopping_rounds=25,
