@@ -114,8 +114,6 @@ logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shap
 
 # drop out outliers
 outlier_limit = 0.36
-lower_limit = -0.36
-upper_limit = 0.375
 lower_limit = -0.4
 upper_limit = 0.4
 if False:
@@ -155,7 +153,7 @@ xgboost_parameters = {
 logger.debug('xgboost parameters: %s' % xgboost_parameters)
 xgb_boost_rounds = 1200  # was 1000
 # cross-validation
-cross_validation_nfold = 8 # was 7
+cross_validation_nfold = 8
 
 cv_result = xgb.cv(xgboost_parameters, dtrain,
                    early_stopping_rounds=25,
