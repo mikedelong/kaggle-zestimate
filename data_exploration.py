@@ -54,7 +54,9 @@ plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', f
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
 plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
 plt.tight_layout()
-plt.show()
+figure_filename = 'properties-na-counts.png'
+plt.savefig(figure_filename)
+
 
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
              column_name not in ['parcelid']}
@@ -70,6 +72,7 @@ plt.xticks(x_pos, sorted_keys, rotation='vertical', fontsize=8)
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 # plt.ylabel('Column N/A counts')
+plt.suptitle('Properties data null counts by column')
 figure_filename = 'properties-na-counts.png'
 plt.savefig(figure_filename)
 
@@ -85,6 +88,7 @@ plt.xticks(x_pos, sorted_keys, rotation='vertical', fontsize=8)
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 # plt.ylabel('Column N/A counts')
+plt.suptitle('Training data null counts by column')
 figure_filename = 'train-na-counts.png'
 plt.savefig(figure_filename)
 
