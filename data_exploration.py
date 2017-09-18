@@ -42,7 +42,7 @@ sorted_values = [item[1] for item in sorted_counts]
 plt.bar(x_pos, sorted_values, align='center')
 sorted_keys = [item[0] for item in sorted_counts]
 plt.xlim([-1, len(x_pos)])
-plt.xticks(x_pos, sorted_keys, rotation='vertical')
+plt.xticks(x_pos, sorted_keys, rotation='vertical', fontsize=8)
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
@@ -57,7 +57,7 @@ plt.figure()
 sorted_values = [na_counts[key] for key in sorted_keys]
 plt.bar(x_pos, sorted_values, align='center')
 plt.xlim([-1, len(x_pos)])
-plt.xticks(x_pos, sorted_keys, rotation='vertical')
+plt.xticks(x_pos, sorted_keys, rotation='vertical', fontsize=8)
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
 plt.ylabel('Column N/A counts')
