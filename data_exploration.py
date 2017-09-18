@@ -54,7 +54,7 @@ plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', f
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
 plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
 plt.tight_layout()
-figure_filename = 'properties-na-counts.png'
+figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
 
 
