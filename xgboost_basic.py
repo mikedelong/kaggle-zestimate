@@ -121,7 +121,7 @@ if False:
 else:
     train_df = train_df[(train_df.logerror < upper_limit) & (train_df.logerror > lower_limit)]
 
-train_df = train_df[abs(train_df.logerror) < outlier_limit]
+    # train_df = train_df[abs(train_df.logerror) < outlier_limit]
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
 # todo figure out how to do this only once
 train_columns_to_drop = ['parcelid', 'logerror', 'transactiondate'] + additional_columns_to_drop
