@@ -41,23 +41,20 @@ In this section, you will want to clearly define the problem that you are trying
 - _Have you thoroughly discussed how you will attempt to solve the problem?_
 - _Is an anticipated solution clearly defined? Will the reader understand what results you are looking for?_
 
+For the public round we will minimize the mean absolute error between the predicted log error and the actual log error: rather than predicting the house price we are predicting the error of the current model. We will predict the error for all available properties that sold in the last quarter of calendar year 2016.
 
-For the public round we are looking to minimize the mean absolute error between the predicted log error and the actual log error. For each property we predict the log error for each of up to six periods: each month in the last quarter of the calendar year (October, November, and December) for 2016 and 2017. If a property had no transaction for that month then the property is ignored for that period and does not contribute to the overall score.
-
-At the present time we are looking just for the log-error for Fall 2016, since Fall 2017 is in the future so its transactions are not available.
-
-This is primarily a regression problem; our dependent variables are continuous. We have 58 independent variables, but we can put them in three broad categories:
-1. Location data, which tells us where the house is
-2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
-3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so which year it became delinquent
+Our dependent variable is continuous, so this is a regression problem. We have 58 input variables, a mix of real, integer, categorical, and Boolean (flag) variables.
 
 To accomplish this we will
-1. Load the known transaction data and properties data and combine them to create a training set
-2. Investigate the dataset to see if there is skew in the data and look at the proportion of missing data
-3. Clean up and transform the data, removing outliers, scaling and normalizing as appropriate
-4. Train a model
-5. Predict the log-error for all of the properties in the test set
+1. Combine the transaction data we have with the property data we have to build a training set
+2. Investigate the data to see what sort of cleaning and transformation the data will need for the model to work effectively
+3. Transform the data as appropriate
+4. Build and train a model and predict the log-error for all of the properties in the test set
+5. Build a submission file for entry in the Kaggle competition
+6. Submit our file and verify that the results are an improvement over those from the baseline model
+7. Explore model hyperparameters as appropriate
 
+Our results quality will ultimately be based on the score we receive from Kaggle, which is based on log-error data for transactions we do not have; as a result we will not be able to observe the target result directly.
 
 ### Metrics
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
@@ -169,6 +166,11 @@ If we simply ask pandas to describe the log-error we see this:
 |max|          4.737|
 
 This suggests that the log-error is mostly clustered pretty tightly around the mean; also, the mean is greater than the median, so we have a little bit of positive skew.
+
+We have 58 independent variables, but we can put them in three broad qualitative categories:
+1. Location data, which tells us where the house is
+2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
+3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so which year it became delinquent
 
 ### Exploratory Visualization
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
