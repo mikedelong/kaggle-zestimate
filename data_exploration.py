@@ -32,16 +32,16 @@ train_df = pd.read_csv(training_file)
 
 train = train_df.merge(properties, how='left', on='parcelid')
 
-# todo add training data and make a PNG
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
              column_name not in ['parcelid']}
 x_pos = np.arange(len(na_counts))
-plt.figure(figsize=(16, 9))
+plt.figure()
 # let's sort these values before we graph them
 sorted_counts = sorted(na_counts.items(), key=operator.itemgetter(1), reverse=True)
 sorted_values = [item[1] for item in sorted_counts]
 plt.bar(x_pos, sorted_values, align='center')
 sorted_keys = [item[0] for item in sorted_counts]
+plt.xlim([-1, len(x_pos)])
 plt.xticks(x_pos, sorted_keys, rotation='vertical')
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
@@ -52,10 +52,11 @@ plt.savefig(figure_filename)
 na_counts = {column_name: train[column_name].isnull().sum() for column_name in list(train) if
              column_name not in ['parcelid']}
 x_pos = np.arange(len(na_counts) - 2)
-plt.figure(figsize=(16, 9))
+plt.figure()
 # let's use the ordering from the properties
 sorted_values = [na_counts[key] for key in sorted_keys]
 plt.bar(x_pos, sorted_values, align='center')
+plt.xlim([-1, len(x_pos)])
 plt.xticks(x_pos, sorted_keys, rotation='vertical')
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
