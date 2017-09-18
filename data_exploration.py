@@ -31,6 +31,30 @@ properties = pd.read_csv(properties_file, dtype={
 train_df = pd.read_csv(training_file)
 
 train = train_df.merge(properties, how='left', on='parcelid')
+big_error = train[abs(train['logerror']) > 0.3]
+logger.debug('big error has length %d (%.2f percent of total)' % (len(big_error), 100 * (float(len(big_error))/float(len(train_df)))))
+columns_to_drop = []
+columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
+                                       'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear']
+columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
+                                       'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear',
+                   'architecturalstyletypeid', 'basementsqft', 'finishedsquarefeet6', 'finishedsquarefeet13',
+                   'poolsizesum', 'typeconstructiontypeid', 'yardbuildingsqft26', 'taxdelinquencyflag', 'taxdelinquencyyear']
+correlation_input_data = big_error.drop(columns_to_drop, axis=1)
+
+# let's get the Pearson correlation for the training data
+
+train_pearson_correlations = correlation_input_data.corr(method='pearson')
+correlations_len  = len(train_pearson_correlations)
+correlations_columns = train_pearson_correlations.columns
+plt.figure()
+plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
+plt.colorbar()
+plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
+plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
+plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
+plt.tight_layout()
+plt.show()
 
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
              column_name not in ['parcelid']}
@@ -45,7 +69,7 @@ plt.xlim([-1, len(x_pos)])
 plt.xticks(x_pos, sorted_keys, rotation='vertical', fontsize=8)
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
-plt.ylabel('Column N/A counts')
+# plt.ylabel('Column N/A counts')
 figure_filename = 'properties-na-counts.png'
 plt.savefig(figure_filename)
 
@@ -60,7 +84,7 @@ plt.xlim([-1, len(x_pos)])
 plt.xticks(x_pos, sorted_keys, rotation='vertical', fontsize=8)
 plt.yscale('log', nonposy='clip')
 plt.tight_layout()
-plt.ylabel('Column N/A counts')
+# plt.ylabel('Column N/A counts')
 figure_filename = 'train-na-counts.png'
 plt.savefig(figure_filename)
 
