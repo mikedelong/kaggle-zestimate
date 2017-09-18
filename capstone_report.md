@@ -60,14 +60,16 @@ Our results quality will ultimately be based on the score we receive from Kaggle
 In this section, you will need to clearly define the metrics or calculations you will use to measure performance of a model or result in your project. These calculations and metrics should be justified based on the characteristics of the problem and problem domain. Questions to ask yourself when writing this section:
 - _Are the metrics you’ve chosen to measure the performance of your models clearly discussed and defined?_
 - _Have you provided reasonable justification for the metrics chosen based on the problem and solution?_
-As stated above we will be calculating the log-error of the Zestimate; we will be attempting to minimize the mean absolute error (MAE) of the log-error, which is the mean of the absolute values of the difference between the predicted value and the Zestimate value. Alternatives here would be the mean squared error (MSE) or the root mean squared error (RMSE).
+
+As stated above we will be calculating the log-error of the Zestimate; we will be attempting to minimize the mean absolute error ([MAE](https://www.kaggle.com/wiki/MeanAbsoluteError)) of the log-error, which is the mean of the absolute values of the difference between the predicted value and the Zestimate value. Alternatives here would be the mean squared error (MSE) or the root mean squared error ([RMSE](https://www.kaggle.com/wiki/RootMeanSquaredError)).
 
 This choice was not open for us to make; the contest designers chose this error measure. This is a pretty reasonable choice however, because it represents a preference for minimizing the error at every point, by weighting each datapoint equally. The mean-squared error measures, by contrast, weight large errors more heavily.  
 
-https://www.kaggle.com/wiki/MeanAbsoluteError
+The competition frequently asked questions ([FAQ](https://www.kaggle.com/c/zillow-prize-1/discussion/33899)) discusses the choice of MAE over RMSE as follows:
+> Q: Why did Zillow pick the log error instead of an absolute error metric such as RMSE?
+Home sale prices have a right skewed distribution and are also strongly heteroscedastic, so we need to use a relative error metric instead of an absolute metric to ensure valuation models are not biased towards expensive homes. A relative error metric like the percentage error or log ratio error avoids these problems. While we report Zestimate errors in terms of percentages on Zillow.com because we believe that to be a more intuitive metric for consumers, we do not advocate using percentage error to evaluate models in Zillow Prize, as it may lead to biased models The log error is free of this bias problem and when using the natural logarithm, errors close to 1 approximate percentage errors quite closely. See [this paper](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2635088) for more on relative errors and why log error should be used instead of percentage error.
 
-https://www.kaggle.com/wiki/RootMeanSquaredError
-
+As mentioned above our real success or failure can be measured by the MAE of the log-error, which we cannot calculate directly because we do not have the Zestimates for all of the target properties.
 
 ## II. Analysis
 _(approx. 2-4 pages)_
