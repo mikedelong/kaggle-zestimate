@@ -47,6 +47,11 @@ if do_min_max_scaling:
         scaled_columns.append(column_name)
     properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
+# todo test this
+# take the log of select columns
+for column_name in ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt']:
+    properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
+
 # encode labels as needed
 do_na_fill = False
 if do_na_fill:
@@ -115,7 +120,7 @@ logger.debug('train shape: %s, test shape: %s' % ((x_train.shape,), (x_test.shap
 # drop out outliers
 outlier_limit = 0.36
 lower_limit = -0.4
-upper_limit = 0.4
+upper_limit = 0.5
 if False:
     train_df = train_df[abs(train_df.logerror) < outlier_limit]
 else:
@@ -218,7 +223,8 @@ scores = zip(*importance)[1]
 x_pos = np.arange(len(features))
 plt.figure(figsize=(16, 9))
 plt.bar(x_pos, scores, align='center')
-plt.xticks(x_pos, features, rotation='vertical')  # was 'vertical'
+plt.xticks(x_pos, features, rotation='vertical')
+plt.xlim(-1, len(x_pos))
 plt.tight_layout()
 plt.ylabel('Feature importance')
 
