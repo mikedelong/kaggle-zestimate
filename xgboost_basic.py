@@ -75,17 +75,6 @@ else:
         label_encoder.fit(list(properties[column_name].values))
         properties[column_name] = label_encoder.transform(list(properties[column_name].values))
 
-do_consolidate_columns = False
-if do_consolidate_columns:
-    # Columns to be consolidated
-    properties['yardbuildingsqft17'] = properties['yardbuildingsqft17'].apply(lambda x: 0 if np.isnan(x) else x).astype(
-        float)
-    properties['yardbuildingsqft26'] = properties['yardbuildingsqft26'].apply(lambda x: 0 if np.isnan(x) else x).astype(
-        float)
-    properties['yard_building_square_feet'] = properties['yardbuildingsqft17'].astype(int) + properties[
-        'yardbuildingsqft26'].astype(float)
-    properties = properties.drop(['yardbuildingsqft17', 'yardbuildingsqft26'], axis=1)
-
 # properties['transactiondate'] = pd.to_datetime(properties['transactiondate'])
 # properties['Month'] = properties['transactiondate'].dt.month
 # properties['dayofweek'] = properties['transactiondate'].dt.dayofweek
