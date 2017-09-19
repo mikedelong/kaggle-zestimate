@@ -41,10 +41,14 @@ log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount
 for column_name in log_columns:
     properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
 
+# transform tax delinquency year
+properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
+    lambda x: (17 - x if x < 20 else 117 - x) if pd.notnull(x) else x)
 do_min_max_scaling = True
 if do_min_max_scaling:
     min_max_scaler = MinMaxScaler(copy=True)
     scaled_columns = list()
+    other_columns = ['roomcnt', 'bedroomcnt', 'lotsizesquarefeet', 'calculatedfinishedsquarefeet', 'yearbuilt']
     location_columns = ['latitude', 'longitude']
     columns_to_scale = location_columns
     for column_name in location_columns:
@@ -54,7 +58,6 @@ if do_min_max_scaling:
         properties[column_name].fillna(inplace=True, value=mean_value)
         scaled_columns.append(column_name)
     properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
-
 
 # encode labels as needed
 do_na_fill = False
