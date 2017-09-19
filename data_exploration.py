@@ -130,9 +130,13 @@ logger.debug('properties-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
 # for column_name in ['fips', 'regionidcity', 'regionidcounty', 'regionidzip', 'regionidneighborhood', 'storytypeid']:
 #     logger.debug('%s : %s' % (column_name, train[column_name].unique()))
 
-for column_name in ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
-                    'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
-                    'propertycountylandusecode', 'propertyzoningdesc', 'yearbuilt']:
+
+columns_of_interest = ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
+                       'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
+                       'propertycountylandusecode', 'propertyzoningdesc', 'yearbuilt', 'storytypeid', 'fireplaceflag',
+                       'taxdelinquencyflag']
+columns_of_interest = sorted(list(set(columns_of_interest)))
+for column_name in columns_of_interest:
     uniques = train[column_name].unique()
     logger.debug('%s : %d :: %s' % (column_name, len(uniques), uniques))
 for column_name in list(train):
