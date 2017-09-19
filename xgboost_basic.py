@@ -35,11 +35,19 @@ logger.debug('loading training data from %s' % training_file)
 train = pd.read_csv(training_file)
 logger.debug('data load complete.')
 
+# take the log of select columns
+
+log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt']
+for column_name in log_columns:
+    properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
+
 do_min_max_scaling = True
 if do_min_max_scaling:
     min_max_scaler = MinMaxScaler(copy=True)
     scaled_columns = list()
-    for column_name in ['latitude', 'longitude']:
+    location_columns = ['latitude', 'longitude']
+    columns_to_scale = location_columns
+    for column_name in location_columns:
         logger.debug('column %s has %d null values' % (column_name, properties[column_name].isnull().sum()))
         mean_value = properties[column_name].mean()
         logger.debug('column %s has mean value %.2f' % (column_name, mean_value))
@@ -47,10 +55,6 @@ if do_min_max_scaling:
         scaled_columns.append(column_name)
     properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
-# todo test this
-# take the log of select columns
-for column_name in ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt']:
-    properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
 
 # encode labels as needed
 do_na_fill = False
