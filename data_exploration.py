@@ -126,8 +126,6 @@ logger.debug('properties-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
     properties['latitude'].mean(), properties['latitude'].std(), properties['latitude'].min(),
     properties['latitude'].max()))
 
-logger.debug('%s' % train['latitude'].describe())
-
 # let's get some unique values:
 # for column_name in ['fips', 'regionidcity', 'regionidcounty', 'regionidzip', 'regionidneighborhood', 'storytypeid']:
 #     logger.debug('%s : %s' % (column_name, train[column_name].unique()))
@@ -175,8 +173,9 @@ figure_filename = 'train-error-scatter.png'
 plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
-# describe the error
-logger.debug(train[column_name].describe())
+# describe the error and the tax amount
+for column_name in ['logerror', 'taxamount']:
+    logger.debug('describing column %s : %s' % (column_name, train[column_name].describe()) )
 
 # visualize the percentile of the error on a map
 quantile = 0.995
