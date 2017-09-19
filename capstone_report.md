@@ -63,7 +63,7 @@ As stated above we will be calculating the log-error of the Zestimate; we will b
 This choice was not open for us to make; the contest designers chose this error measure. This is a pretty reasonable choice however, because it represents a preference for minimizing the error at every point, by weighting each datapoint equally. The mean-squared error measures, by contrast, weight large errors more heavily.  
 
 The competition frequently asked questions ([FAQ](https://www.kaggle.com/c/zillow-prize-1/discussion/33899)) discuss the choice of MAE over RMSE:
-> Q: Why did Zillow pick the log error instead of an absolute error metric such as RMSE?
+> Why did Zillow pick the log error instead of an absolute error metric such as RMSE?
 Home sale prices have a right skewed distribution and are also strongly heteroscedastic, so we need to use a relative error metric instead of an absolute metric to ensure valuation models are not biased towards expensive homes. A relative error metric like the percentage error or log ratio error avoids these problems. While we report Zestimate errors in terms of percentages on Zillow.com because we believe that to be a more intuitive metric for consumers, we do not advocate using percentage error to evaluate models in Zillow Prize, as it may lead to biased models The log error is free of this bias problem and when using the natural logarithm, errors close to 1 approximate percentage errors quite closely. See [this paper](https://papers.ssrn.com/sol3/papers.cfm?abstract_id=2635088) for more on relative errors and why log error should be used instead of percentage error.
 
 As mentioned above our real success or failure can be measured by the MAE of the log-error, which we cannot calculate directly because we do not have the Zestimates for all of the target properties.
@@ -151,8 +151,7 @@ The raw or native features are as follows:
 |taxdelinquencyflag	| Property taxes for this parcel are past due as of 2015|
 |taxdelinquencyyear	| Year for which the unpaid property taxes were due |
 
-If we simply ask pandas to describe the log-error we see this:
-
+The summary statistics for log-error look like this:
 |name|value|
 |---|---|
 |count|    90275|
@@ -165,6 +164,23 @@ If we simply ask pandas to describe the log-error we see this:
 |max|          4.737|
 
 This suggests that the log-error is mostly clustered pretty tightly around the mean; also, the mean is greater than the median, so we have a little bit of positive skew.
+
+Similarly the summary statistics for the total tax amount look like this:
+
+|name|value|
+|---|---:|
+|count     |90269|
+|mean       |5983.97|
+|std        |6838.87|
+|min          |49.08|
+|25%        |2872.83|
+|50%        |4542.75|
+|75%        |6901.09|
+|max      |321936.09|
+
+This suggests we have some positive skew and some (massive) outliers, especially on the right end. 
+
+We have one feature that takes on only one value (assessmentyear), and several that take on only two values, one of them being null:
 
 We have 58 independent variables, but we can put them in three broad qualitative categories:
 1. Location data, which tells us where the house is
