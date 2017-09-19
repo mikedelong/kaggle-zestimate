@@ -132,7 +132,7 @@ logger.debug('properties-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
 
 for column_name in ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
                     'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
-                    'propertycountylandusecode', 'propertyzoningdesc']:
+                    'propertycountylandusecode', 'propertyzoningdesc', 'yearbuilt']:
     uniques = train[column_name].unique()
     logger.debug('%s : %d :: %s' % (column_name, len(uniques), uniques))
 for column_name in list(train):
