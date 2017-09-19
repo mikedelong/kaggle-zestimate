@@ -41,6 +41,14 @@ log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount
 for column_name in log_columns:
     properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
 
+# todo go through these and see if any of them will improve our score
+# all of these are either one value or null, so we can tell the model that they're Boolean
+true_false_columns = ['hashottuborspa', 'buildingclasstypeid', 'decktypeid', 'poolcnt', 'pooltypeid2',
+                      'pooltypeid7', 'pooltypeid10', 'fireplaceflag']
+for column_name in true_false_columns:
+    properties[column_name] = properties[column_name].apply(lambda x: False if pd.isnull(x) else True)
+
+
 # transform tax delinquency year
 properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
     lambda x: (17 - x if x < 20 else 117 - x) if pd.notnull(x) else x)
@@ -87,10 +95,21 @@ if do_na_fill:
     fips_one_hot = fips_one_hot.drop([1.0], axis=1)
 # properties = properties.drop(['fips', 'regionidcounty'], axis=1)
 # properties = properties.join(fips_one_hot)
+
+# note the model considers these insignificant: ['assessmentyear', 'fireplaceflag', 'storytypeid', 'typeconstructiontypeid']
 if True:
     properties = properties.drop(
-        ['fips', 'regionidcounty', 'assessmentyear', 'fireplaceflag', 'hashottuborspa', 'poolcnt', 'pooltypeid10',
-         'pooltypeid2', 'pooltypeid7', 'storytypeid', 'typeconstructiontypeid'], axis=1)
+        ['fips', 'regionidcounty',
+         # 'assessmentyear',
+         # 'fireplaceflag',
+         # 'hashottuborspa',
+         # 'poolcnt',
+         # 'pooltypeid10',
+         # 'pooltypeid2',
+         # 'pooltypeid7',
+         # 'storytypeid',
+         # 'typeconstructiontypeid'
+         ], axis=1)
 
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
