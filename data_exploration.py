@@ -5,9 +5,9 @@ import time
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import scipy.stats as stats
 import stateplane
 from sklearn.preprocessing import MinMaxScaler
-import scipy.stats as stats
 
 start_time = time.time()
 # set up logging
@@ -32,7 +32,8 @@ properties = pd.read_csv(properties_file, dtype={
 train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 
-log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt']
+log_columns = sorted(['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
+               'calculatedfinishedsquarefeet'])
 for column_name in log_columns:
     t0 = stats.skew(train[column_name].dropna())
     t1 = stats.skew(properties[column_name].dropna())
@@ -43,7 +44,7 @@ for column_name in log_columns:
 
 big_error = train[abs(train['logerror']) > 0.3]
 logger.debug('big error has length %d (%.2f percent of total)' % (
-len(big_error), 100 * (float(len(big_error)) / float(len(train_df)))))
+    len(big_error), 100 * (float(len(big_error)) / float(len(train_df)))))
 columns_to_drop = []
 columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
                    'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear']
@@ -153,11 +154,10 @@ for column_name in columns_of_interest:
     logger.debug('%s : %d :: %s' % (column_name, len(train_uniques), train_uniques))
 
 for column_name in list(train):
-
     logger.debug('%s : train unique: %d properties unique: %d' % (column_name, len(train[column_name].unique()),
-
-                                                                  (len(properties[column_name].unique())) if column_name in list(properties) else -1)
-                 )
+                                                                  (len(properties[
+                                                                           column_name].unique())) if column_name in list(
+                                                                      properties) else -1))
 
 if False:
     logger.debug(
