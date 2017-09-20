@@ -141,6 +141,7 @@ logger.debug('properties-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
 # for column_name in ['fips', 'regionidcity', 'regionidcounty', 'regionidzip', 'regionidneighborhood', 'storytypeid']:
 #     logger.debug('%s : %s' % (column_name, train[column_name].unique()))
 
+logger.debug('%s %s' % ('yearbuilt', train['yearbuilt'].describe()))
 
 columns_of_interest = ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
                        'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
@@ -148,10 +149,15 @@ columns_of_interest = ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'p
                        'taxdelinquencyflag', 'buildingqualitytypeid']
 columns_of_interest = sorted(list(set(columns_of_interest)))
 for column_name in columns_of_interest:
-    uniques = train[column_name].unique()
-    logger.debug('%s : %d :: %s' % (column_name, len(uniques), uniques))
+    train_uniques = train[column_name].unique()
+    logger.debug('%s : %d :: %s' % (column_name, len(train_uniques), train_uniques))
+
 for column_name in list(train):
-    logger.debug('%s : %d' % (column_name, len(train[column_name].unique())))
+
+    logger.debug('%s : train unique: %d properties unique: %d' % (column_name, len(train[column_name].unique()),
+
+                                                                  (len(properties[column_name].unique())) if column_name in list(properties) else -1)
+                 )
 
 if False:
     logger.debug(
