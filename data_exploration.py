@@ -7,6 +7,7 @@ import numpy as np
 import pandas as pd
 import stateplane
 from sklearn.preprocessing import MinMaxScaler
+import scipy.stats as stats
 
 start_time = time.time()
 # set up logging
@@ -29,8 +30,17 @@ properties = pd.read_csv(properties_file, dtype={
     'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
 
 train_df = pd.read_csv(training_file)
-
 train = train_df.merge(properties, how='left', on='parcelid')
+
+log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt']
+for column_name in log_columns:
+    t0 = stats.skew(train[column_name].dropna())
+    t1 = stats.skew(properties[column_name].dropna())
+    t2 = stats.skew(np.log(train[column_name].dropna()))
+    t3 = stats.skew(np.log(properties[column_name].dropna()))
+    logger.debug('%s : train skew: %.2f log train skew: %.2f properties skew: %.2f log properties skew: %.2f' %
+                 (column_name, t0, t2, t1, t3))
+
 big_error = train[abs(train['logerror']) > 0.3]
 logger.debug('big error has length %d (%.2f percent of total)' % (
 len(big_error), 100 * (float(len(big_error)) / float(len(train_df)))))
