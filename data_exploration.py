@@ -32,6 +32,16 @@ properties = pd.read_csv(properties_file, dtype={
 train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 
+# count nulls for some representative fields:
+properties_count = len(properties)
+not_null_percentages = {column_name:  100 *
+                 float(properties[column_name].count())/float(properties_count) for column_name in list(properties)}
+
+sorted_percentages = sorted(not_null_percentages.items(), key=operator.itemgetter(1))
+for item in sorted_percentages:
+    logger.debug('%s percent not null: %.2f' % (item[0], item[1]))
+
+
 log_columns = sorted(['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
                'calculatedfinishedsquarefeet'])
 for column_name in log_columns:
