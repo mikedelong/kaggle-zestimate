@@ -32,20 +32,22 @@ train_df = pd.read_csv(training_file)
 
 train = train_df.merge(properties, how='left', on='parcelid')
 big_error = train[abs(train['logerror']) > 0.3]
-logger.debug('big error has length %d (%.2f percent of total)' % (len(big_error), 100 * (float(len(big_error))/float(len(train_df)))))
+logger.debug('big error has length %d (%.2f percent of total)' % (
+len(big_error), 100 * (float(len(big_error)) / float(len(train_df)))))
 columns_to_drop = []
 columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
-                                       'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear']
+                   'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear']
 columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
-                                       'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear',
+                   'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear',
                    'architecturalstyletypeid', 'basementsqft', 'finishedsquarefeet6', 'finishedsquarefeet13',
-                   'poolsizesum', 'typeconstructiontypeid', 'yardbuildingsqft26', 'taxdelinquencyflag', 'taxdelinquencyyear']
+                   'poolsizesum', 'typeconstructiontypeid', 'yardbuildingsqft26', 'taxdelinquencyflag',
+                   'taxdelinquencyyear']
 correlation_input_data = big_error.drop(columns_to_drop, axis=1)
 
 # let's get the Pearson correlation for the training data
 
 train_pearson_correlations = correlation_input_data.corr(method='pearson')
-correlations_len  = len(train_pearson_correlations)
+correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
 plt.figure()
 plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
@@ -56,7 +58,6 @@ plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontwe
 plt.tight_layout()
 figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
-
 
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
              column_name not in ['parcelid']}
@@ -134,7 +135,7 @@ logger.debug('properties-latitude mean : %.2f std: %.2f min: %.2f max: %.2f' % (
 columns_of_interest = ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
                        'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
                        'propertycountylandusecode', 'propertyzoningdesc', 'yearbuilt', 'storytypeid', 'fireplaceflag',
-                       'taxdelinquencyflag']
+                       'taxdelinquencyflag', 'buildingqualitytypeid']
 columns_of_interest = sorted(list(set(columns_of_interest)))
 for column_name in columns_of_interest:
     uniques = train[column_name].unique()
@@ -179,7 +180,7 @@ logger.debug('wrote file %s' % figure_filename)
 
 # describe the error and the tax amount
 for column_name in ['logerror', 'taxamount']:
-    logger.debug('describing column %s : %s' % (column_name, train[column_name].describe()) )
+    logger.debug('describing column %s : %s' % (column_name, train[column_name].describe()))
 
 # visualize the percentile of the error on a map
 quantile = 0.995
