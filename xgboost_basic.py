@@ -115,14 +115,14 @@ if True:
             # 'fips',
             'regionidcounty',
          'assessmentyear',
-         # 'fireplaceflag',
+         'fireplaceflag',
          # 'hashottuborspa',
          # 'poolcnt',
-         # 'pooltypeid10',
+         'pooltypeid10',
          # 'pooltypeid2',
          # 'pooltypeid7',
-         # 'storytypeid',
-         # 'typeconstructiontypeid'
+         'storytypeid',
+         'typeconstructiontypeid'
          ], axis=1)
 
 
