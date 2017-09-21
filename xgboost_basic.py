@@ -36,18 +36,23 @@ train = pd.read_csv(training_file)
 logger.debug('data load complete.')
 
 # take the log of select columns
-
-log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt']
+# todo add calculatedfinishedsquarefeet here?
+log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
+               'calculatedfinishedsquarefeet']
 for column_name in log_columns:
     properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
 
+
 # todo go through these and see if any of them will improve our score
 # all of these are either one value or null, so we can tell the model that they're Boolean
-true_false_columns = ['hashottuborspa', 'buildingclasstypeid', 'decktypeid', 'poolcnt', 'pooltypeid2',
-                      'pooltypeid7', 'pooltypeid10', 'fireplaceflag']
+true_false_columns = ['hashottuborspa',
+                      # 'buildingclasstypeid', 'decktypeid', 'poolcnt', 'pooltypeid2',
+                      # 'pooltypeid7', 'pooltypeid10',
+                      'fireplaceflag']
 for column_name in true_false_columns:
     properties[column_name] = properties[column_name].apply(lambda x: False if pd.isnull(x) else True)
 
+parcels_of_interest = properties[(properties['latitude'].isnull()) & properties['longitude'].isnull()]['parcelid']
 
 # transform tax delinquency year
 properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
@@ -77,30 +82,39 @@ if do_na_fill:
             label_encoder.fit(list(properties[c].values))
             properties[c] = label_encoder.transform(list(properties[c].values))
 else:
-    for column_name in ['propertycountylandusecode', 'propertyzoningdesc']:
-        properties[column_name] = properties[column_name].fillna('ZZZ')
+    for column_name in ['propertycountylandusecode', 'propertyzoningdesc', 'fips', 'regionidzip']:
+        if column_name in ['fips', 'regionidzip']:
+            properties[column_name] = properties[column_name].fillna('ZZZ')
+
+        # properties[column_name] = properties[column_name].fillna('ZZZ')
         label_encoder = LabelEncoder()
         label_encoder.fit(list(properties[column_name].values))
         properties[column_name] = label_encoder.transform(list(properties[column_name].values))
+
+logger.debug('Properties has %d missing lat/lon pairs' %
+             len(properties[(properties['latitude'].isnull()) & properties['longitude'].isnull()]))
 
 # properties['transactiondate'] = pd.to_datetime(properties['transactiondate'])
 # properties['Month'] = properties['transactiondate'].dt.month
 # properties['dayofweek'] = properties['transactiondate'].dt.dayofweek
 
 # one-hot for counties instead of FIPS
-fips_map = {6037: 'Los Angeles', 6059: 'Orange', 6111: 'Ventura'}
-properties['fips'].replace(fips_map, inplace=True)
-fips_one_hot = pd.get_dummies(properties['fips'])
-if do_na_fill:
-    fips_one_hot = fips_one_hot.drop([1.0], axis=1)
+if False:
+    fips_map = {6037: 'Los Angeles', 6059: 'Orange', 6111: 'Ventura'}
+    properties['fips'].replace(fips_map, inplace=True)
+    fips_one_hot = pd.get_dummies(properties['fips'])
+    if do_na_fill:
+        fips_one_hot = fips_one_hot.drop([1.0], axis=1)
 # properties = properties.drop(['fips', 'regionidcounty'], axis=1)
 # properties = properties.join(fips_one_hot)
 
 # note the model considers these insignificant: ['assessmentyear', 'fireplaceflag', 'storytypeid', 'typeconstructiontypeid']
 if True:
     properties = properties.drop(
-        ['fips', 'regionidcounty',
-         # 'assessmentyear',
+        [
+            # 'fips',
+            'regionidcounty',
+         'assessmentyear',
          # 'fireplaceflag',
          # 'hashottuborspa',
          # 'poolcnt',
@@ -111,14 +125,20 @@ if True:
          # 'typeconstructiontypeid'
          ], axis=1)
 
+
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
 
+# todo find some other way to drop duplicate sales
 # drop duplicate transactions from the training data
 do_drop_duplicate_sales = True
 if do_drop_duplicate_sales:
     duplicate_rows = train_df[train_df['parcelid'].duplicated()]['parcelid'].index
     train_df = train_df.drop(duplicate_rows)
+
+# # let's drop latitude and longitude and see what happens
+# train_df = train_df.drop(['latitude', 'longitude'], axis=1)
+# properties = properties.drop(['latitude', 'longitude'], axis=1)
 
 logger.debug(list(train_df))
 logger.debug('dropping columns parcel ID, log error, and transaction date to get training data')
@@ -206,6 +226,13 @@ output_columns = output.columns.tolist()
 # rearrange the columns to put the last one first
 output = output[output_columns[-1:] + output_columns[:-1]]
 logger.debug('our submission file has %d rows (should be 18232?)' % len(output))
+
+# check the cases where latitude and longitude are missing
+if False:
+    t0 = properties.copy(deep=True)
+    t0['predicted'] = predictions
+    t1 = t0[(t0['latitude'].isnull()) & (t0['longitude'].isnull())]
+    logger.debug(len(t1))
 
 make_submission = True
 use_gzip_compression = True
