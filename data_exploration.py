@@ -38,8 +38,10 @@ not_null_percentages = {column_name:  100 *
                  float(properties[column_name].count())/float(properties_count) for column_name in list(properties)}
 
 sorted_percentages = sorted(not_null_percentages.items(), key=operator.itemgetter(1))
+print ('|column | percent not null|')
+print('|---|---|')
 for item in sorted_percentages:
-    logger.debug('%s percent not null: %.2f' % (item[0], item[1]))
+    print('|%s | %.2f|' % (item[0], item[1]))
 
 
 log_columns = sorted(['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
