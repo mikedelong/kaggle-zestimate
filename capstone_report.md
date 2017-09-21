@@ -69,14 +69,9 @@ Home sale prices have a right skewed distribution and are also strongly heterosc
 As mentioned above our real success or failure can be measured by the MAE of the log-error, which we cannot calculate directly because we do not have the Zestimates for all of the target properties.
 
 ## II. Analysis
-_(approx. 2-4 pages)_
+Introductory text goes here.
 
 ### Data Exploration
-In this section, you will be expected to analyze the data you are using for the problem. This data can either be in the form of a dataset (or datasets), input data (or input files), or even an environment. The type of data should be thoroughly described and, if possible, have basic statistics and information presented (such as discussion of input features or defining characteristics about the input or environment). Any abnormalities or interesting qualities about the data that may need to be addressed have been identified (such as features that need to be transformed or the possibility of outliers). Questions to ask yourself when writing this section:
-- _If a dataset is present for this problem, have you thoroughly discussed certain features about the dataset? Has a data sample been provided to the reader?_
-- _If a dataset is present for this problem, are statistics about the dataset calculated and reported? Have any relevant results from this calculation been discussed?_
-- _If a dataset is **not** present for this problem, has discussion been made about the input space or input data for your problem?_
-- _Are there any abnormalities or characteristics about the input space or dataset that need to be addressed? (categorical variables, missing values, outliers, etc.)_
 
 We have two data files as input:
 * A training set of properties and home features for 2016: 2985217 properties and 58 features.
@@ -174,18 +169,89 @@ Similarly the summary statistics for the total tax amount look like this:
 |std        |6838.87|
 |min          |49.08|
 |25%        |2872.83|
-|50%        |4542.75|
+|50% (median)       |4542.75|
 |75%        |6901.09|
 |max      |321936.09|
 
-This suggests we have some positive skew and some (massive) outliers, especially on the right end. 
+This suggests we have some positive skew and some (massive) outliers, meaning that we have a few very expensive houses.
 
-We have one feature that takes on only one value (assessmentyear), and several that take on only two values, one of them being null:
+We have one feature that takes on only one value (assessmentyear), and several that take on only two values, one of them being null. We should be able to model these as Booleans.
 
 We have 58 independent variables, but we can put them in three broad qualitative categories:
 1. Location data, which tells us where the house is
 2. House intrinsic data, which tells us things about the structure, its features, or the lot on which it sits
 3. Tax data, which tells us the tax assessment value, and where appropriate if the property is tax delinquent and if so which year it became delinquent
+
+We also have a mix of features that are common, features that are rare, and some that are in between. The following table shows how often a particular feature is present, as a percent, in ascending order.
+
+|column | percent not null|
+|---:|---:|
+|storytypeid | 0.05|
+|basementsqft | 0.05|
+|yardbuildingsqft26 | 0.09|
+|fireplaceflag | 0.17|
+|architecturalstyletypeid | 0.20|
+|typeconstructiontypeid | 0.23|
+|finishedsquarefeet13 | 0.26|
+|buildingclasstypeid | 0.42|
+|decktypeid | 0.57|
+|finishedsquarefeet6 | 0.74|
+|poolsizesum | 0.94|
+|pooltypeid2 | 1.07|
+|pooltypeid10 | 1.24|
+|taxdelinquencyyear | 1.89|
+|hashottuborspa | 2.31|
+|yardbuildingsqft17 | 2.69|
+|finishedsquarefeet15 | 6.39|
+|finishedfloor1squarefeet | 6.79|
+|finishedsquarefeet50 | 6.79|
+|threequarterbathnbr | 10.44|
+|fireplacecnt | 10.47|
+|pooltypeid7 | 16.26|
+|poolcnt | 17.34|
+|numberofstories | 22.85|
+|airconditioningtypeid | 27.18|
+|garagetotalsqft | 29.59|
+|garagecarcnt | 29.59|
+|regionidneighborhood | 38.74|
+|heatingorsystemtypeid | 60.51|
+|buildingqualitytypeid | 64.94|
+|unitcnt | 66.24|
+|propertyzoningdesc | 66.28|
+|lotsizesquarefeet | 90.75|
+|finishedsquarefeet12 | 90.75|
+|fullbathcnt | 95.68|
+|calculatedbathnbr | 95.68|
+|censustractandblock | 97.48|
+|landtaxvaluedollarcnt | 97.73|
+|regionidcity | 97.89|
+|yearbuilt | 97.99|
+|calculatedfinishedsquarefeet | 98.14|
+|structuretaxvaluedollarcnt | 98.16|
+|taxvaluedollarcnt | 98.57|
+|taxamount | 98.95|
+|regionidzip | 99.53|
+|propertycountylandusecode | 99.59|
+|roomcnt | 99.62|
+|bathroomcnt | 99.62|
+|bedroomcnt | 99.62|
+|assessmentyear | 99.62|
+|longitude | 99.62|
+|regionidcounty | 99.62|
+|latitude | 99.62|
+|propertylandusetypeid | 99.62|
+|fips | 99.62|
+|rawcensustractandblock | 99.62|
+
+This means we could probably build a regression model using only numerical data, but we want to leverage all the data we can. That means we need to deal with categorical and Boolean data as well.
+
+We have some data that is obviously categorical, like the county land use code (which has 78 values) and the property zoning description (which has 1997 values) which are string values and need to be transformed to be usable in the model. For these we will need to use a label encoder to convert the strings to integers.
+
+We also have some data that in its raw form looks like numerical data but that will need some transformation: in particular the year the property became tax delinquent is stored as a two-digit number, and some of the dates are in the Twentieth century, so we will need to transform them into a "number of years delinquent" to get them in the right order. We also have the FIPS/County ID, which is represented by a numerical value but is essentially a categorical value.
+
+We also need to deal with missing values. We are choosing a model that will tolerate null values, but we want to impute values where possible. For e.g. the latitude and longitude we will assume that we can impute values using mean values.
+
+Finally, most of the log-error values cluster around zero, but some are (relatively speaking) quite large. We will want to train the model without some number of outliers to avoid overfitting. We will choose these by ignoring cases with a log-error above some value without regard for other features of the property.
 
 ### Exploratory Visualization
 In this section, you will need to provide some form of visualization that summarizes or extracts a relevant characteristic or feature about the data. The visualization should adequately support the data being used. Discuss why this visualization was chosen and how it is relevant. Questions to ask yourself when writing this section:
