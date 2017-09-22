@@ -26,8 +26,23 @@ logger.debug('started')
 
 sns.set(font_scale = 1.5)
 
+properties_file = '../input/properties_2016.csv'
+training_file = '../input/train_2016_v2.csv'
+
+properties = pd.read_csv(properties_file, dtype={
+    'fireplaceflag': np.bool, 'hashottuborspa': np.bool,
+    'propertycountylandusecode': np.str,
+    'propertyzoningdesc': np.str}, converters={
+    'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
+logger.debug('properties read from %s complete' % properties_file)
+train_data = pd.read_csv(training_file)
+logger.debug('training data read from %s complete' % training_file)
+train = train_data.merge(properties, how='left', on='parcelid')
+
+logger.debug(train.info())
 
 
-logger.debug('done')
+
+logger.debug('finished')
 elapsed_time = time.time() - start_time
 logger.debug('elapsed time %d seconds', elapsed_time)
