@@ -60,11 +60,10 @@ for column_name in ['fips', 'regionidzip']:
 properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
     lambda x: (17 - x if x < 20 else 117 - x) if pd.notnull(x) else x)
 
+# min-max scaling with imputation via mean
 min_max_scaler = MinMaxScaler(copy=True)
 scaled_columns = list()
-other_columns = ['roomcnt', 'bedroomcnt', 'lotsizesquarefeet', 'calculatedfinishedsquarefeet', 'yearbuilt']
 location_columns = ['latitude', 'longitude']
-columns_to_scale = location_columns
 for column_name in location_columns:
     logger.debug('column %s has %d null values' % (column_name, properties[column_name].isnull().sum()))
     mean_value = properties[column_name].mean()
