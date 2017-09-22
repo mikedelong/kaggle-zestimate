@@ -12,6 +12,7 @@ import logging
 import time
 
 from sklearn.metrics import accuracy_score
+from sklearn.preprocessing import LabelEncoder
 
 start_time = time.time()
 # set up logging
@@ -35,9 +36,29 @@ properties = pd.read_csv(properties_file, dtype={
     'propertyzoningdesc': np.str}, converters={
     'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
 logger.debug('properties read from %s complete' % properties_file)
+
+# let's patch up the data before we make our training set
+bool_columns = ['hashottuborspa', 'fireplaceflag']
+for column_name in bool_columns:
+    properties[column_name] = properties[column_name].apply(lambda x: False if pd.isnull(x) else True)
+
+# transform these from labels to integers
+for column_name in ['propertycountylandusecode', 'propertyzoningdesc']:
+    label_encoder = LabelEncoder()
+    label_encoder.fit(list(properties[column_name].values))
+    properties[column_name] = label_encoder.transform(list(properties[column_name].values))
+
+# transform from labels to integers and fill in NAs
+for column_name in ['fips', 'regionidzip']:
+    properties[column_name] = properties[column_name].fillna('ZZZ')
+    label_encoder = LabelEncoder()
+    label_encoder.fit(list(properties[column_name].values))
+    properties[column_name] = label_encoder.transform(list(properties[column_name].values))
+
 train_data = pd.read_csv(training_file)
 logger.debug('training data read from %s complete' % training_file)
 train = train_data.merge(properties, how='left', on='parcelid')
+
 
 logger.debug(train.info())
 
