@@ -72,6 +72,13 @@ for column_name in location_columns:
     scaled_columns.append(column_name)
 properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
+# take the log of select columns
+log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
+               'calculatedfinishedsquarefeet']
+for column_name in log_columns:
+    properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
+
+
 train_data = pd.read_csv(training_file)
 logger.debug('training data read from %s complete' % training_file)
 train = train_data.merge(properties, how='left', on='parcelid')
