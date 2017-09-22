@@ -13,6 +13,7 @@ import time
 
 from sklearn.metrics import accuracy_score
 from sklearn.preprocessing import LabelEncoder
+from sklearn.preprocessing import MinMaxScaler
 
 start_time = time.time()
 # set up logging
@@ -58,6 +59,19 @@ for column_name in ['fips', 'regionidzip']:
 # transform tax delinquency year
 properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
     lambda x: (17 - x if x < 20 else 117 - x) if pd.notnull(x) else x)
+
+min_max_scaler = MinMaxScaler(copy=True)
+scaled_columns = list()
+other_columns = ['roomcnt', 'bedroomcnt', 'lotsizesquarefeet', 'calculatedfinishedsquarefeet', 'yearbuilt']
+location_columns = ['latitude', 'longitude']
+columns_to_scale = location_columns
+for column_name in location_columns:
+    logger.debug('column %s has %d null values' % (column_name, properties[column_name].isnull().sum()))
+    mean_value = properties[column_name].mean()
+    logger.debug('column %s has mean value %.2f' % (column_name, mean_value))
+    properties[column_name].fillna(inplace=True, value=mean_value)
+    scaled_columns.append(column_name)
+properties[scaled_columns] = min_max_scaler.fit_transform(properties[scaled_columns])
 
 train_data = pd.read_csv(training_file)
 logger.debug('training data read from %s complete' % training_file)
