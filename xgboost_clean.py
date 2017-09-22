@@ -55,6 +55,10 @@ for column_name in ['fips', 'regionidzip']:
     label_encoder.fit(list(properties[column_name].values))
     properties[column_name] = label_encoder.transform(list(properties[column_name].values))
 
+# transform tax delinquency year
+properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
+    lambda x: (17 - x if x < 20 else 117 - x) if pd.notnull(x) else x)
+
 train_data = pd.read_csv(training_file)
 logger.debug('training data read from %s complete' % training_file)
 train = train_data.merge(properties, how='left', on='parcelid')
