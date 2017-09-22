@@ -81,10 +81,18 @@ for column_name in log_columns:
 
 train_data = pd.read_csv(training_file)
 logger.debug('training data read from %s complete' % training_file)
+
+# drop out outliers
+lower_limit = -0.4
+upper_limit = 0.5
+train_data = train_data[(train_data.logerror < upper_limit) & (train_data.logerror > lower_limit)]
+
+
 train = train_data.merge(properties, how='left', on='parcelid')
 
 
 logger.debug(train.info())
+
 
 
 
