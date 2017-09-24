@@ -36,7 +36,6 @@ train = pd.read_csv(training_file)
 logger.debug('data load complete.')
 
 # take the log of select columns
-# todo add calculatedfinishedsquarefeet here?
 log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
                'calculatedfinishedsquarefeet']
 for column_name in log_columns:
