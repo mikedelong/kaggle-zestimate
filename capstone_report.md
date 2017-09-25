@@ -254,7 +254,7 @@ We also need to deal with missing values. We are choosing a model that will tole
 Finally, most of the log-error values cluster around zero, but some are (relatively speaking) quite large. We will want to train the model without some number of outliers to avoid overfitting. We will choose these by ignoring cases with a log-error above some value without regard for other features of the property.
 
 ### Exploratory Visualization
-We have three basic kinds of training data: location data, property intrinsic data, and tax-related data; and our target variable is the log-error, which we will visualize first.
+We have three basic kinds of training data: location data, property intrinsic data, and tax-related data; and our target variable is the log-error.
 
 #### Missing data
 We would like to know what the distribution of missing data looks like. In particular we want to know if there are properties where we have a substantial number of cases where we have features that are always present in the training data but are missing in the test data. We do this by adding bar charts for the number of missing values (NAs) for each feature.
@@ -267,6 +267,8 @@ Missing data for training data:
 ![](./train-na-counts.png)
 
 We have kept the columns in the same order, so it is relatively easy to see the differences in the distribution of missing data: in particular it is clear that we have more than ten features for which we have no missing data in the training data set, but we have a fair number of properties in the test data set that have this data missing.
+
+This suggests that the training data is not entirely a representative sample of the test data, because we are missing some crucial data for some properties that we cannot infer. This means there is an unknown lower bound on how far we can reduce the error.
 
 #### Error data
 We already suspect from the discussion above that the log-error is mostly quite small; it is probably helpful to visualize the log-error to see what the distribution actually looks like.
