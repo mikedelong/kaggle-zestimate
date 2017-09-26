@@ -330,8 +330,21 @@ We first look at the tax value and its components (land and structure) and the t
 
 For the test data we see that the same trends are apparent as before: there are more outliers, and they lie further to the right.
 
-
 ![](properties-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
+
+We also want to look at the age of the houses being sold; we do not expect a strong correlation between the age of the house and the log-error, except possibly that very old houses will be difficult to model. We know that roughly 1% of housing stock is torn down every year, so any house older than about 70 years will not have a lot of comparables.
+
+![](yearbuilt-histogram.png)
+
+We see here that the distributions are roughly similar, with there being a few very old houses in the test data.
+
+Next we want to take a look at properties that are tax delinquent. As mentioned before we expect these to be in poor repair and sell at a discount to the good-repair price. What we see is that in the training data almost all of the properties that are tax delinquent have become delinquent since the start of the credit crisis in 2007-2008. However in the test data we also have a few houses that have been delinquent for more than 30 years.
+
+Regardless there are relatively few properties that are delinquent in aggregate. We might expect that the impact of tax delinquency would be very small, but probably not negligible.
+
+![](taxdelinquencyyear-histogram.png)
+
+
 ### Algorithms and Techniques
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
 - _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
@@ -343,7 +356,7 @@ We are using a gradient boosted random forest model called XGBoost. XGBoost is a
 1. Define the algorithm
 2. Justify its use based on the characteristics of the problem and the problem domain
 3. Include algorithm variables and parameters
-4.
+4. Foo and bar
 
 ### Benchmark
 In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
