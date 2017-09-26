@@ -313,11 +313,11 @@ In this section we will look at intrinsic properties of the property: lot sizes,
 
 For the following graph we have bucketed the training data and we have used a log scale for the magnitude (y-axis) of each feature so we can easily see some breadth along the x-axis. We can see in each graph that we have a few outliers on the right end of the distribution: we have a handful of large to very large properties in our training data: e.g. we have at least one each of the following: a 25000 square foot house, a 700,000 square foot lot, a 16-bedroom house, and a house with 20 bathrooms.
 
-![](train-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
+![](./train-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
 
 The test data is even more skewed, especially the house and lot square feet. Also, we note that for the test data the right end of the bedroom and bathroom distribution is substantially thicker, meaning that we have a few hundred properties we will try to model on the basis of a handful of training cases.
 
-![](properties-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
+![](./properties-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
 
 #### Tax data
 We really have two kinds of tax data: tax assessment data and tax delinquency data. We would expect these two groups of data to have different relationships to the house price:
@@ -326,15 +326,15 @@ We really have two kinds of tax data: tax assessment data and tax delinquency da
 
 We first look at the tax value and its components (land and structure) and the tax amount. These show the distributions we would expect based on the sizes and room counts above. We note briefly that while the tax amount is one to two cents on the dollar of tax value, the distributions are not identical, suggesting perhaps that tax rates are not entirely consistent across all properties in all counties.
 
-![](train-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
+![](./train-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
 
 For the test data we see that the same trends are apparent as before: there are more outliers, and they lie further to the right.
 
-![](properties-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
+![](./properties-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
 
 We also want to look at the age of the houses being sold; we do not expect a strong correlation between the age of the house and the log-error, except possibly that very old houses will be difficult to model. We know that roughly 1% of housing stock is torn down every year, so any house older than about 70 years will not have a lot of comparables.
 
-![](yearbuilt-histogram.png)
+![](./yearbuilt-histogram.png)
 
 We see here that the distributions are roughly similar, with there being a few very old houses in the test data.
 
@@ -342,8 +342,7 @@ Next we want to take a look at properties that are tax delinquent. As mentioned 
 
 Regardless there are relatively few properties that are delinquent in aggregate. We might expect that the impact of tax delinquency would be very small, but probably not negligible.
 
-![](taxdelinquencyyear-histogram.png)
-
+![](./taxdelinquencyyear-histogram.png)
 
 ### Algorithms and Techniques
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
