@@ -52,18 +52,49 @@ plt.savefig(figure_filename)
 
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
-column_name_00 = 'calculatedfinishedsquarefeet'
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
 axes[0, 0].set_yscale('log')
 axes[0, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
-column_name_10 = 'bedroomcnt'
 properties.hist(ax=axes[1, 0], bins=50, column=column_name_10)
 axes[1, 0].set_yscale('log')
-column_name_01 = 'lotsizesquarefeet'
 properties.hist(ax=axes[0, 1], bins=50, column=column_name_01)
 axes[0, 1].set_yscale('log')
 axes[0, 1].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
-column_name_11 = 'bathroomcnt'
+properties.hist(ax=axes[1, 1], bins=50, column=column_name_11)
+axes[1, 1].set_yscale('log')
+figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
+plt.savefig(figure_filename)
+
+fig, axes = plt.subplots(ncols=2, nrows=2)
+column_name_00 = 'taxvaluedollarcnt'
+train.hist(ax=axes[0, 0], bins=50, column=column_name_00)
+axes[0, 0].set_yscale('log')
+axes[0, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_10 = 'taxamount'
+train.hist(ax=axes[1, 0], bins=50, column=column_name_10)
+axes[1, 0].set_yscale('log')
+axes[1, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_01 = 'structuretaxvaluedollarcnt'
+train.hist(ax=axes[0, 1], bins=50, column=column_name_01)
+axes[0, 1].set_yscale('log')
+axes[0, 1].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_11 = 'landtaxvaluedollarcnt'
+train.hist(ax=axes[1, 1], bins=50, column=column_name_11)
+axes[1, 1].set_yscale('log')
+figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
+plt.savefig(figure_filename)
+
+
+fig, axes = plt.subplots(ncols=2, nrows=2)
+properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
+axes[0, 0].set_yscale('log')
+axes[0, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+properties.hist(ax=axes[1, 0], bins=50, column=column_name_10)
+axes[1, 0].set_yscale('log')
+axes[1, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+properties.hist(ax=axes[0, 1], bins=50, column=column_name_01)
+axes[0, 1].set_yscale('log')
+axes[0, 1].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
 properties.hist(ax=axes[1, 1], bins=50, column=column_name_11)
 axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
