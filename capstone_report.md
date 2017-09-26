@@ -315,6 +315,8 @@ For the following graph we have bucketed the training data and we have used a lo
 
 ![](train-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
 
+The test data is even more skewed, especially the house and lot square feet. Also, we note that for the test data the right end of the bedroom and bathroom distribution is substantially thicker, meaning that we have a few hundred properties we will try to model on the basis of a handful of training cases.
+
 ![](properties-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
 
 #### Tax data
