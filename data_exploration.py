@@ -29,8 +29,34 @@ properties = pd.read_csv(properties_file, dtype={
     'propertyzoningdesc': np.str}, converters={
     'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
 
+properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
+    lambda x: (2000 + x if x < 20 else 1900 + x) if pd.notnull(x) else x)
+
 train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
+
+fig, axes = plt.subplots(ncols=2)
+column_name = 'taxdelinquencyyear'
+train.hist(ax=axes[0], bins=10, column=column_name)
+axes[0].set_yscale('log')
+axes[0].set_xticks([1970, 1980, 1990, 2000, 2010, 2020])
+properties.hist(ax=axes[1], bins=10, column=column_name)
+axes[1].set_yscale('log')
+axes[1].set_xticks([1970, 1980, 1990, 2000, 2010, 2020])
+figure_filename = '-'.join([column_name, 'histogram']) + '.png'
+plt.savefig(figure_filename)
+
+
+fig, axes = plt.subplots(ncols=2)
+column_name = 'yearbuilt'
+train.hist(ax=axes[0], bins=50, column=column_name)
+axes[0].set_yscale('log')
+axes[0].set_xlim(1800, 2020)
+properties.hist(ax=axes[1], bins=50, column=column_name)
+axes[1].set_yscale('log')
+axes[1].set_xlim(1800, 2020)
+figure_filename = '-'.join([column_name, 'histogram']) + '.png'
+plt.savefig(figure_filename)
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_00 = 'calculatedfinishedsquarefeet'
@@ -378,7 +404,6 @@ column_name = 'lotsizesquarefeet'
 fig, ax = plt.subplots()
 logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
 train.hist(ax=ax, bins=40, column=column_name)
-# ax.set_xscale('log')
 ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
