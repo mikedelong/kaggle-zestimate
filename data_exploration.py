@@ -50,7 +50,6 @@ axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
 
-
 fig, axes = plt.subplots(ncols=2, nrows=2)
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
 axes[0, 0].set_yscale('log')
@@ -83,7 +82,6 @@ train.hist(ax=axes[1, 1], bins=50, column=column_name_11)
 axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
-
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
