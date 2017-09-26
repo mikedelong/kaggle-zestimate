@@ -32,10 +32,48 @@ properties = pd.read_csv(properties_file, dtype={
 train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 
+fig, axes = plt.subplots(ncols=2, nrows=2)
+column_name_00 = 'calculatedfinishedsquarefeet'
+train.hist(ax=axes[0, 0], bins=50, column=column_name_00)
+axes[0, 0].set_yscale('log')
+axes[0, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_10 = 'bedroomcnt'
+train.hist(ax=axes[1, 0], bins=50, column=column_name_10)
+axes[1, 0].set_yscale('log')
+column_name_01 = 'lotsizesquarefeet'
+train.hist(ax=axes[0, 1], bins=50, column=column_name_01)
+axes[0, 1].set_yscale('log')
+axes[0, 1].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_11 = 'bathroomcnt'
+train.hist(ax=axes[1, 1], bins=50, column=column_name_11)
+axes[1, 1].set_yscale('log')
+figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
+plt.savefig(figure_filename)
+
+
+fig, axes = plt.subplots(ncols=2, nrows=2)
+column_name_00 = 'calculatedfinishedsquarefeet'
+properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
+axes[0, 0].set_yscale('log')
+axes[0, 0].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_10 = 'bedroomcnt'
+properties.hist(ax=axes[1, 0], bins=50, column=column_name_10)
+axes[1, 0].set_yscale('log')
+column_name_01 = 'lotsizesquarefeet'
+properties.hist(ax=axes[0, 1], bins=50, column=column_name_01)
+axes[0, 1].set_yscale('log')
+axes[0, 1].ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
+column_name_11 = 'bathroomcnt'
+properties.hist(ax=axes[1, 1], bins=50, column=column_name_11)
+axes[1, 1].set_yscale('log')
+figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
+plt.savefig(figure_filename)
+
 # count nulls for some representative fields:
 properties_count = len(properties)
-not_null_percentages = {column_name:  100 *
-                 float(properties[column_name].count())/float(properties_count) for column_name in list(properties)}
+not_null_percentages = {column_name: 100 *
+                                     float(properties[column_name].count()) / float(properties_count) for column_name in
+                        list(properties)}
 
 sorted_percentages = sorted(not_null_percentages.items(), key=operator.itemgetter(1))
 print ('|column | percent not null|')
@@ -43,9 +81,8 @@ print('|---|---|')
 for item in sorted_percentages:
     print('|%s | %.2f|' % (item[0], item[1]))
 
-
 log_columns = sorted(['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt',
-               'calculatedfinishedsquarefeet'])
+                      'calculatedfinishedsquarefeet'])
 for column_name in log_columns:
     t0 = stats.skew(train[column_name].dropna())
     t1 = stats.skew(properties[column_name].dropna())
@@ -222,6 +259,7 @@ figure_filename = 'outliers-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
+column_name = 'logerror'
 fig, axes = plt.subplots(ncols=2)
 logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
 bins = 40
