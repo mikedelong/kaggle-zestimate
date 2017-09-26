@@ -322,8 +322,16 @@ The test data is even more skewed, especially the house and lot square feet. Als
 #### Tax data
 We really have two kinds of tax data: tax assessment data and tax delinquency data. We would expect these two groups of data to have different relationships to the house price:
 * The tax assessment may be very predictive of the sale price, provided the assessment is updated frequently. In a county where tax assessments are updated only when houses are sold, it will be a trailing indicator rather than a leading indicator.
-* Houses become tax delinquent for several reasons.
+* Houses become tax delinquent for several reasons, but generally properties that are tax-delinquent will sell at a discount to the price they would have otherwise have brought.
 
+We first look at the tax value and its components (land and structure) and the tax amount. These show the distributions we would expect based on the sizes and room counts above. We note briefly that while the tax amount is one to two cents on the dollar of tax value, the distributions are not identical, suggesting perhaps that tax rates are not entirely consistent across all properties in all counties.
+
+![](train-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
+
+For the test data we see that the same trends are apparent as before: there are more outliers, and they lie further to the right.
+
+
+![](properties-taxvaluedollarcnt-structuretaxvaluedollarcnt-taxamount-landtaxvaluedollarcnt.png)
 ### Algorithms and Techniques
 In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
 - _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
