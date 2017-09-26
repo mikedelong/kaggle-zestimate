@@ -273,7 +273,14 @@ This suggests that the training data is not entirely a representative sample of 
 #### Error data
 We already suspect from the discussion above that the log-error is mostly quite small; it is probably helpful to visualize the log-error to see what the distribution actually looks like.
 
+We can do this in a couple of ways: as a scatter plot and as a histogram.
+
+![](./train-error-scatter.png)
+
+First we see that virtually all of the log-error values are near zero, and only a few are larger than about 0.1.
+
 ![](./train-error-histogram.png)
+
 Here we see the distribution of the log-error on a linear and log scale. It is relatively easy to see that the overwhelming majority of the training data has small errors, with a few outliers, and that the log-error has just a little positive skew.
 
 #### Location data
@@ -299,10 +306,16 @@ Finally, we're especially interested in whether there is an obvious geographic c
 
 ![](./outliers-latitude-longitude-fips.png)
 
-For the most part they look like a small random sample of the data.
+For the most part they look like a small random sample of the data. This again suggests that we have errors in the data that we can't easily correct.
 
 #### Property intrinsic data
-In this section we will look at intrinsic properties of the property.
+In this section we will look at intrinsic properties of the property: lot sizes, house square feet, and room counts.
+
+For the following graph we have bucketed the training data and we have used a log scale for the magnitude (y-axis) of each feature so we can easily see some breadth along the x-axis. We can see in each graph that we have a few outliers on the right end of the distribution: we have a handful of large to very large properties in our training data: e.g. we have at least one each of the following: a 25000 square foot house, a 700,000 square foot lot, a 16-bedroom house, and a house with 20 bathrooms.
+
+![](train-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
+
+![](properties-calculatedfinishedsquarefeet-lotsizesquarefeet-bedroomcnt-bathroomcnt.png)
 
 #### Tax data
 We really have two kinds of tax data: tax assessment data and tax delinquency data. We would expect these two groups of data to have different relationships to the house price:
