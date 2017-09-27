@@ -358,10 +358,10 @@ We are using a gradient boosted random forest model called XGBoost. XGBoost is a
 4. Foo and bar
 
 ### Benchmark
-In this section, you will need to provide a clearly defined benchmark result or threshold for comparing across performances obtained by your solution. The reasoning behind the benchmark (in the case where it is not an established result) should be discussed. Questions to ask yourself when writing this section:
-- _Has some result or value been provided that acts as a benchmark for measuring performance?_
-- _Is it clear how this result or value was obtained (whether by data or by hypothesis)?_
 
+Our benchmark model is very simple; we just take the arithmetic mean of the log error for the training data and use it for the log error of the test data. This gets a score of 0.0645752, which puts us above the mean on the current leaderboard.
+
+It is not entirely surprising that we would do well with a constant model given that we are modeling the log error of the Zestimate, which we would expect to be close to zero most of the time, or how tightly the log error clusters for the test data.
 
 ## III. Methodology
 _(approx. 3-5 pages)_
