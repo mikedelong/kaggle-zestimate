@@ -1,13 +1,7 @@
 import logging
-import operator
 import time
 
-import matplotlib.pyplot as plt
-import numpy as np
 import pandas as pd
-import scipy.stats as stats
-import stateplane
-from sklearn.preprocessing import MinMaxScaler
 
 start_time = time.time()
 # set up logging
