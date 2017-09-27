@@ -32,8 +32,20 @@ logger.debug('mean log error from training data is %.4f' % value)
 
 columns = ['201610', '201611', '201612', '201710', '201711', '201712']
 submission[columns] = value
-logger.debug(submission.head(10))
 
+make_submission = True
+use_gzip_compression = True
+submission_prefix = 'zestimate'
+output_filename = 'baseline.csv'
+if use_gzip_compression:
+    output_filename += '.gz'
+    if make_submission:
+        logger.debug('writing submission to %s' % output_filename)
+        submission.to_csv(output_filename, index=False, float_format='%.4f', compression='gzip')
+else:
+    if make_submission:
+        logger.debug('writing submission to %s' % output_filename)
+        submission.to_csv(output_filename, index=False, float_format='%.4f')
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
