@@ -20,20 +20,19 @@ logger.addHandler(console_handler)
 console_handler.setLevel(logging.DEBUG)
 logger.debug('started')
 
-properties_file = '../input/properties_2016.csv'
 training_file = '../input/train_2016_v2.csv'
 
-properties = pd.read_csv(properties_file, dtype={
-    'fireplaceflag': np.bool, 'hashottuborspa': np.bool,
-    'propertycountylandusecode': np.str,
-    'propertyzoningdesc': np.str}, converters={
-    'taxdelinquencyflag': lambda x: np.bool(True) if x == 'Y' else np.bool(False)})  # avoid mixed type warning
-
-properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
-    lambda x: (2000 + x if x < 20 else 1900 + x) if pd.notnull(x) else x)
-
 train_df = pd.read_csv(training_file)
-train = train_df.merge(properties, how='left', on='parcelid')
+
+sample_submission_file = '../input/sample_submission.csv'
+submission = pd.read_csv(sample_submission_file)
+
+value = train_df['logerror'].mean()
+logger.debug('mean log error from training data is %.4f' % value)
+
+columns = ['201610', '201611', '201612', '201710', '201711', '201712']
+submission[columns] = value
+logger.debug(submission.head(10))
 
 
 logger.debug('done')
