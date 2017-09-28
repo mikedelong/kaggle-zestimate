@@ -350,7 +350,30 @@ In this section, you will need to discuss the algorithms and techniques you inte
 - _Are the techniques to be used thoroughly discussed and justified?_
 - _Is it made clear how the input data or datasets will be handled by the algorithms and techniques chosen?_
 
-We are using a gradient boosted random forest model called XGBoost. XGBoost is a general-purpose supervised learning method that uses gradient boosting and decision trees; it is also called a tree ensemble model. It was developed by Tianqi Chen and Carlos Guestrin at the University of Washington, and the original  [paper](https://arxiv.org/pdf/1603.02754.pdf) describing the model was published in June 2016.
+We are using a gradient tree boosting model called XGBoost. XGBoost is a general-purpose model   developed by Tianqi Chen and Carlos Guestrin at the University of Washington, and the original  [paper](https://arxiv.org/pdf/1603.02754.pdf) describing the model was published in June 2016.
+
+It is attractive for our case because
+- It has both regression and classification flavors, and we need to solve a regression problem
+- It can handle a mix of data types, including Boolean, integer, and real-valued data
+- It can handle missing data; and
+- It can handle sparse data.
+
+It is also attractive relative to some alternatives in that the model can identify the relative feature importance for input features, making results relatively easy to interpret.
+
+The model takes the parameters shown in the following table:
+|parameter   |meaning   |
+|---|---|
+|alpha| An L1 regularization on the weights; defaults to zero. |
+|base score   |  The initial score; a kind of bias. We set this to be the mean of the log errors in an attempt to improve on the baseline model described above. |
+|booster   | Our choice of gradient boosting algorithm; the choices are "gbtree", "gblinear" or "dart". After some experimentation we settled on the default, "gbtree."|
+|eta   | The step size shrinkage; used to prevent overfitting. Also known as the learning rate.  |
+|evaluation metric   | The metric the model will use for the objective function for the validation data. For our purposes this is "mae", for the mean absolute error.  |
+|gamma   | The minimum loss reduction required for the model to make a further partition on a leaf node of a tree. The larger gamma is the more conservative the model will be.  |
+|lambda   | An L2 regularization term on weights, increase this value will make model more conservative; defaults to 1.0.  |
+|max depth   | The maximum depth of a tree. Increasing this value will make the model more complex and likely to be prone to overfitting; defaults to 6.  |
+|objective   | The learning objective. For regression our choices are linear, logistic, gamma (for outcomes that are expected to come from a gamma distribution), and Tweedie (for outcomes from a Tweedie distribution).  |
+|random seed   | a seed for the random number generator; setting this will allow us to get reproducible results from the model  |
+|subsample   |  This is the subsample ratio of the training instance; it determines how much of the instances will grow trees. Defaults to 1.0 (all instances grow trees). |
 
 1. Define the algorithm
 2. Justify its use based on the characteristics of the problem and the problem domain
@@ -359,7 +382,7 @@ We are using a gradient boosted random forest model called XGBoost. XGBoost is a
 
 ### Benchmark
 
-Our benchmark model is very simple; we just take the arithmetic mean of the log error for the training data and use it for the log error of the test data. This gets a score of 0.0645752, which puts us above the mean on the current leaderboard.
+Our benchmark model is very simple; we just take the arithmetic mean of the log error for the training data and use it for the log error of the test data. This gets a score of 0.0651282, which puts us above the mean on the current leader board.
 
 It is not entirely surprising that we would do well with a constant model given that we are modeling the log error of the Zestimate, which we would expect to be close to zero most of the time, or how tightly the log error clusters for the test data.
 
