@@ -375,10 +375,6 @@ The model takes the parameters shown in the following table:
 |random seed   | a seed for the random number generator; setting this will allow us to get reproducible results from the model  |
 |subsample   |  This is the subsample ratio of the training instance; it determines how much of the instances will grow trees. Defaults to 1.0 (all instances grow trees). |
 
-1. Define the algorithm
-2. Justify its use based on the characteristics of the problem and the problem domain
-3. Include algorithm variables and parameters
-4. Foo and bar
 
 ### Benchmark
 
