@@ -345,10 +345,6 @@ Regardless there are relatively few properties that are delinquent in aggregate.
 ![](./taxdelinquencyyear-histogram.png)
 
 ### Algorithms and Techniques
-In this section, you will need to discuss the algorithms and techniques you intend to use for solving the problem. You should justify the use of each one based on the characteristics of the problem and the problem domain. Questions to ask yourself when writing this section:
-- _Are the algorithms you will use, including any default variables/parameters in the project clearly defined?_
-- _Are the techniques to be used thoroughly discussed and justified?_
-- _Is it made clear how the input data or datasets will be handled by the algorithms and techniques chosen?_
 
 We are using a gradient tree boosting model called XGBoost. XGBoost is a general-purpose model   developed by Tianqi Chen and Carlos Guestrin at the University of Washington, and the original  [paper](https://arxiv.org/pdf/1603.02754.pdf) describing the model was published in June 2016.
 
@@ -360,8 +356,10 @@ It is attractive for our case because
 
 It is also attractive relative to some alternatives in that the model can identify the relative feature importance for input features, making results relatively easy to interpret.
 
+XGBoost is a tree ensemble model; the trees are classification and regression (CART) trees. The training uses an objective function consisting of a loss function (which we will try to minimize) and a regularization. In our case the loss function is MAE as described above, and the regularization is to be determined empirically. Training proceeds by splitting each tree and scoring the resulting split iteratively until some exit criteria are satisfied.
+
 The model takes the parameters shown in the following table:
-|parameter   |meaning   |
+|Parameter   |Meaning   |
 |---|---|
 |alpha| An L1 regularization on the weights; defaults to zero. |
 |base score   |  The initial score; a kind of bias. We set this to be the mean of the log errors in an attempt to improve on the baseline model described above. |
@@ -374,7 +372,6 @@ The model takes the parameters shown in the following table:
 |objective   | The learning objective. For regression our choices are linear, logistic, gamma (for outcomes that are expected to come from a gamma distribution), and Tweedie (for outcomes from a Tweedie distribution).  |
 |random seed   | a seed for the random number generator; setting this will allow us to get reproducible results from the model  |
 |subsample   |  This is the subsample ratio of the training instance; it determines how much of the instances will grow trees. Defaults to 1.0 (all instances grow trees). |
-
 
 ### Benchmark
 
