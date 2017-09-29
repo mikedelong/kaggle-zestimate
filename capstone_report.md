@@ -394,10 +394,10 @@ If we had just numerical data we could probably scale the data as appropriate an
 
 The preprocessing steps are as follows:
 1. Combine the transaction data in the training data with properties to get a complete set of labeled training data
-1. Replace Nan values with zero as appropriate; anywhere this is unambiguous
-2. Remove duplicate sales
+1. Deal with missing values as appropriate
 3. Remove outliers in the training data
-4. Do one train/predict cycle with the model to identify features that are not significant and remove these features.
+4. Transform some features that have lots of skew
+5. Do a train/predict cycle with the model to identify features that are not significant and remove these features.
 
 We also need to transform the
 
