@@ -383,23 +383,17 @@ It is not entirely surprising that we would do well with a constant model given 
 _(approx. 3-5 pages)_
 
 ### Data Preprocessing
-In this section, all of your preprocessing steps will need to be clearly documented, if any were necessary. From the previous section, any of the abnormalities or characteristics that you identified about the dataset will be addressed and corrected here. Questions to ask yourself when writing this section:
-- _If the algorithms chosen require preprocessing steps like feature selection or feature transformations, have they been properly documented?_
-- _Based on the **Data Exploration** section, if there were abnormalities or characteristics that needed to be addressed, have they been properly corrected?_
-- _If no preprocessing is needed, has it been made clear why?_
 
-There are a lot of nulls in this data.
-There is a lot of categorical data.
-If we had just numerical data we could probably scale the data as appropriate and use a linear regression model.
-
-The preprocessing steps are as follows:
+In order to use XGBoost with this data we will need to do a fair amount of preprocessing. The preprocessing steps are as follows:
 1. Combine the transaction data in the training data with properties to get a complete set of labeled training data
 1. Deal with missing values as appropriate
 3. Remove outliers in the training data
-4. Transform some features that have lots of skew
+4. Transform (log-transform) some features that have lots of skew
+5. Deal with categorical data so it is properly represented
 5. Do a train/predict cycle with the model to identify features that are not significant and remove these features.
 
-We also need to transform the
+The first step is required to have training data; steps two through five are intended to improve the model accuracy; the final step is intended to improve the model runtime.
+
 
 ### Implementation
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
