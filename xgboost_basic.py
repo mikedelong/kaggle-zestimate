@@ -41,7 +41,6 @@ log_columns = ['landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount
 for column_name in log_columns:
     properties[column_name] = properties[column_name].apply(lambda x: np.log(x) if pd.notnull(x) else x)
 
-
 # todo go through these and see if any of them will improve our score
 # all of these are either one value or null, so we can tell the model that they're Boolean
 true_false_columns = ['hashottuborspa',
@@ -113,17 +112,16 @@ if True:
         [
             # 'fips',
             'regionidcounty',
-         'assessmentyear',
-         'fireplaceflag',
-         # 'hashottuborspa',
-         # 'poolcnt',
-         'pooltypeid10',
-         # 'pooltypeid2',
-         # 'pooltypeid7',
-         'storytypeid',
-         'typeconstructiontypeid'
-         ], axis=1)
-
+            'assessmentyear',
+            'fireplaceflag',
+            # 'hashottuborspa',
+            # 'poolcnt',
+            'pooltypeid10',
+            # 'pooltypeid2',
+            # 'pooltypeid7',
+            'storytypeid',
+            'typeconstructiontypeid'
+        ], axis=1)
 
 logger.debug('merging training data and properties on parcel ID')
 train_df = train.merge(properties, how='left', on='parcelid')
@@ -195,7 +193,7 @@ xgb_boost_rounds = 1200  # was 1000
 cross_validation_nfold = 8
 
 cv_result = xgb.cv(xgboost_parameters, dtrain,
-                   early_stopping_rounds=25,
+                   early_stopping_rounds=100,  # was 25
                    nfold=cross_validation_nfold,
                    num_boost_round=xgb_boost_rounds,
                    seed=random_seed,
