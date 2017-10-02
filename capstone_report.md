@@ -396,6 +396,17 @@ The first step is required to have training data; steps two through five are int
 
 
 ### Implementation
+
+The initial solution was fairly straightforward: we needed to build the training data from the available artifacts, clean the data, build the model from the data, predict the result for the full data, and create the output artifacts: the contest submission and the feature importance graph. Our approach proceeded as follows:
+1. Load the known transactions and the property descriptions as pandas dataframes
+2. As part of the property load we transformed some features to suppress some dataframe load warnings:
+    1. We transformed feature 'fireplaceflag' as a Boolean
+    2. We transformed feature 'hashottuborspa' as a Boolean
+    3. We transformed feature 'taxdelinquencyflag' as a Boolean
+    4. We transformed feature 'propertycountylandusecode' as a string
+    5. We transformed feature 'propertyzoningdesc' as a string
+3. 
+
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
 - _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
 - _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
