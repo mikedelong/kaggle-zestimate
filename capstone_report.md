@@ -397,15 +397,22 @@ The first step is required to have training data; steps two through five are int
 
 ### Implementation
 
-The initial solution was fairly straightforward: we needed to build the training data from the available artifacts, clean the data, build the model from the data, predict the result for the full data, and create the output artifacts: the contest submission and the feature importance graph. Our approach proceeded as follows:
+The initial solution was fairly straightforward: we needed to build the training data from the available artifacts, clean the data, build the model from the data, predict the result for the full data, and create the output artifacts: the contest submission and the feature importance graph.
+
+Our data load and cleaning approach proceeded as follows:
 1. Load the known transactions and the property descriptions as pandas dataframes
 2. As part of the property load we transformed some features to suppress some dataframe load warnings:
-    1. We transformed feature 'fireplaceflag' as a Boolean
-    2. We transformed feature 'hashottuborspa' as a Boolean
-    3. We transformed feature 'taxdelinquencyflag' as a Boolean
-    4. We transformed feature 'propertycountylandusecode' as a string
-    5. We transformed feature 'propertyzoningdesc' as a string
-3. 
+    1. We transformed features 'fireplaceflag', 'hashottuborspa', and 'taxdelinquencyflag' as Booleans
+    2. We transformed features 'propertycountylandusecode' and 'propertyzoningdesc' as  strings
+3. We joined the property and transaction data on the parcel ID to get a full set of training data, meaning data that has both features and results
+4. We dropped the parcel ID and log-error columns from the training data to avoid training on a feature that we know is not significant (the parcel ID) and on the result data (the log-error).
+5. We transformed some of the features that have numerical data:
+    1. We transformed features 'calculatedfinishedsquarefeet', 'landtaxvaluedollarcnt', 'structuretaxvaluedollarcnt', 'taxamount', 'taxvaluedollarcnt' using a log transform. We did this because of skew in the original data; the log-transformed data has rather less skew
+    2. We transformed the feature 'taxdelinquencyyear' from two-digit years to four-digit years. We did this because there were some properties in the training data that had become tax delinquent prior to 2000, so simply treating the two-digit years as training data would be inconsistent
+    3. We transformed the latitude and longitude using a min-max scaling. The latitude and longitude as presented in the raw data were fractional degrees multiplied by one million; we did this scaling in an attempt to get the data to more accurately represent the relative differences in the datapoints.
+6. We filled in missing values for various Boolean values, assuming that missing values are False.
+7. We used a label encoder to transform string features to integers, filling in a bogus value for missing values. We did this for four features: 'fips', 'propertycountylandusecode', 'propertyzoningdesc',  and  'regionidzip'
+                
 
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
 - _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
