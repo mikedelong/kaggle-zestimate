@@ -380,7 +380,8 @@ Our benchmark model is very simple; we just take the arithmetic mean of the log 
 It is not entirely surprising that we would do well with a constant model given that we are modeling the log error of the Zestimate, which we would expect to be close to zero most of the time, or how tightly the log error clusters for the test data.
 
 ## III. Methodology
-_(approx. 3-5 pages)_
+
+In this section we discuss the methodology to build and refine a predictive model using XGBoost for the data we have available from Zillow for three California counties for 2016.
 
 ### Data Preprocessing
 
@@ -393,7 +394,6 @@ In order to use XGBoost with this data we will need to do a fair amount of prepr
 5. Do a train/predict cycle with the model to identify features that are not significant and remove these features.
 
 The first step is required to have training data; steps two through five are intended to improve the model accuracy; the final step is intended to improve the model runtime.
-
 
 ### Implementation
 
@@ -412,7 +412,7 @@ Our data load and cleaning approach proceeded as follows:
     3. We transformed the latitude and longitude using a min-max scaling. The latitude and longitude as presented in the raw data were fractional degrees multiplied by one million; we did this scaling in an attempt to get the data to more accurately represent the relative differences in the datapoints.
 6. We filled in missing values for various Boolean values, assuming that missing values are False.
 7. We used a label encoder to transform string features to integers, filling in a bogus value for missing values. We did this for four features: 'fips', 'propertycountylandusecode', 'propertyzoningdesc',  and  'regionidzip'
-                
+
 
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
 - _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
