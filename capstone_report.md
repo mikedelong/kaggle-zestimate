@@ -413,6 +413,7 @@ Our data load and cleaning approach proceeded as follows:
 6. We filled in missing values for various Boolean values, assuming that missing values are False.
 7. We used a label encoder to transform string features to integers, filling in a bogus value for missing values. We did this for four features: 'fips', 'propertycountylandusecode', 'propertyzoningdesc',  and  'regionidzip'
 
+Once we have the data ready we can create and train the model. The model needs several parameters as described above; we can get reasonable results from the model using the default values for most of the model parameters.  
 
 In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
 - _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
