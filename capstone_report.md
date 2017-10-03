@@ -421,6 +421,9 @@ In this section, the process for which metrics, algorithms, and techniques that 
 - _Was there any part of the coding process (e.g., writing complicated functions) that should be documented?_
 
 ### Refinement
+
+To refine the model we had to rely on daily submissions to Kaggle for scoring.
+
 In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
 - _Has an initial solution been found and clearly reported?_
 - _Is the process of improvement clearly documented, such as what techniques were used?_
