@@ -22,8 +22,20 @@ console_handler.setLevel(logging.DEBUG)
 logger.debug('started')
 
 # load in the data from CSV files
-properties_file = '../input/properties_2016.csv'
-training_file = '../input/train_2016_v2.csv'
+
+training_file = ''
+properties_file = ''
+year_to_use = 2017
+if year_to_use == 2016:
+    properties_file = '../input/properties_2016.csv'
+    training_file = '../input/train_2016_v2.csv'
+elif year_to_use == 2017:
+    properties_file = '../input/properties_2017.csv'
+    training_file = '../input/train_2017.csv'
+else:
+    logging.warn('need to pick a year to use; chose %d. Quitting. ' % year_to_use)
+    exit()
+
 logger.debug('loading properties data from %s' % properties_file)
 properties = pd.read_csv(properties_file, dtype={
     'fireplaceflag': np.bool, 'hashottuborspa': np.bool,
