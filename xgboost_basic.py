@@ -59,7 +59,7 @@ do_min_max_scaling = True
 if do_min_max_scaling:
     min_max_scaler = MinMaxScaler(copy=True)
     scaled_columns = list()
-    other_columns = ['roomcnt', 'bedroomcnt', 'lotsizesquarefeet', 'calculatedfinishedsquarefeet', 'yearbuilt']
+    # other_columns = ['roomcnt', 'bedroomcnt', 'lotsizesquarefeet', 'calculatedfinishedsquarefeet', 'yearbuilt']
     location_columns = ['latitude', 'longitude']
     columns_to_scale = location_columns
     for column_name in location_columns:
