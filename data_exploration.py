@@ -20,8 +20,16 @@ logger.addHandler(console_handler)
 console_handler.setLevel(logging.DEBUG)
 logger.debug('started')
 
-properties_file = '../input/properties_2016.csv'
-training_file = '../input/train_2016_v2.csv'
+year_to_use = 2017
+if year_to_use == 2016:
+    properties_file = '../input/properties_2016.csv'
+    training_file = '../input/train_2016_v2.csv'
+elif year_to_use == 2017:
+    properties_file = '../input/properties_2017.csv'
+    training_file = '../input/train_2017.csv'
+else:
+    logging.warn('need to pick a year to use; chose %d. Quitting. ' % year_to_use)
+    exit()
 
 properties = pd.read_csv(properties_file, dtype={
     'fireplaceflag': np.bool, 'hashottuborspa': np.bool,
@@ -251,7 +259,7 @@ logger.debug('%s %s' % ('yearbuilt', train['yearbuilt'].describe()))
 columns_of_interest = ['buildingclasstypeid', 'decktypeid', 'hashottuborspa', 'poolcnt', 'pooltypeid10', 'pooltypeid2',
                        'pooltypeid7', 'typeconstructiontypeid', 'assessmentyear', 'taxdelinquencyyear',
                        'propertycountylandusecode', 'propertyzoningdesc', 'yearbuilt', 'storytypeid', 'fireplaceflag',
-                       'taxdelinquencyflag', 'buildingqualitytypeid']
+                       'taxdelinquencyflag', 'buildingqualitytypeid', 'fips']
 columns_of_interest = sorted(list(set(columns_of_interest)))
 for column_name in columns_of_interest:
     train_uniques = train[column_name].unique()
@@ -316,7 +324,7 @@ logger.debug('wrote file %s' % figure_filename)
 
 column_name = 'logerror'
 fig, axes = plt.subplots(ncols=2)
-logger.debug('%s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
+logger.debug('%s min: %.4f max: %.4f' % (column_name, train[column_name].min(), train[column_name].max()))
 bins = 40
 train.hist(ax=axes[0], bins=bins, column=column_name)
 train.hist(ax=axes[1], bins=bins, column=column_name)
@@ -326,7 +334,8 @@ plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
 
 fig, ax = plt.subplots()
-ax.scatter(train['latitude'], train['longitude'], c=train['fips'].apply(lambda x: colors[x]))
+t1 = train[['latitude', 'longitude', 'fips']].dropna()
+ax.scatter(t1['latitude'], t1['longitude'], c=t1['fips'].apply(lambda x: colors[x]))
 figure_filename = 'train-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 logger.debug('wrote file %s' % figure_filename)
