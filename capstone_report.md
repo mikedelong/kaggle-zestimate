@@ -422,7 +422,7 @@ We will do some careful grid search to refine the parameters we use for the mode
 
 ### Refinement
 
-To refine the model we had to rely on daily submissions to Kaggle for scoring.
+Ordinarily we would refine the model by using a grid search to find the parameters that minimize the MAE. However in our case we do not have the actual log-error for all the properties so we cannot calculate the MAE.  Instead we have to rely on daily submissions to Kaggle for scoring, and we can make only five submissions per day.
 
 In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
 - _Has an initial solution been found and clearly reported?_
