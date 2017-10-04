@@ -413,12 +413,12 @@ Our data load and cleaning approach proceeded as follows:
 6. We filled in missing values for various Boolean values, assuming that missing values are False.
 7. We used a label encoder to transform string features to integers, filling in a bogus value for missing values. We did this for four features: 'fips', 'propertycountylandusecode', 'propertyzoningdesc',  and  'regionidzip'
 
-Once we have the data ready we can create and train the model. The model needs several parameters as described above; we can get reasonable results from the model using the default values for most of the model parameters.  
+Once we have the data ready we can create and train the model. The model needs several parameters as described above; we can get reasonable results from the model using the default values for most of the model parameters, with the following exceptions:
+- base score: for this we will take the mean of the log-error values for the training data
+- number of boost rounds: we need to decide how many rounds to run; this is something we will need to figure out through trial and error
+- early stopping rounds: the XGBoost model will optionally quit early if it makes no progress after some number of rounds; this too we will need to figure out through trial and error
 
-In this section, the process for which metrics, algorithms, and techniques that you implemented for the given data will need to be clearly documented. It should be abundantly clear how the implementation was carried out, and discussion should be made regarding any complications that occurred during this process. Questions to ask yourself when writing this section:
-- _Is it made clear how the algorithms and techniques were implemented with the given datasets or input data?_
-- _Were there any complications with the original metrics or techniques that required changing prior to acquiring a solution?_
-- _Was there any part of the coding process (e.g., writing complicated functions) that should be documented?_
+We will do some careful grid search to refine the parameters we use for the model. Because XGBoost has so many parameters we need to proceed carefully.
 
 ### Refinement
 
