@@ -422,13 +422,32 @@ We will do some careful grid search to refine the parameters we use for the mode
 
 ### Refinement
 
-Ordinarily we would refine the model by using a grid search to find the parameters that minimize the MAE. However in our case we do not have the actual log-error for all the properties so we cannot calculate the MAE.  Instead we have to rely on daily submissions to Kaggle for scoring, and we can make only five submissions per day.
-
 In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
 - _Has an initial solution been found and clearly reported?_
 - _Is the process of improvement clearly documented, such as what techniques were used?_
 - _Are intermediate and final solutions clearly reported as the process is improved?_
 
+In an ideal situation we would have one or the other of the following conditions:
+1. We would have direct access to the Zillow results so we could measure the log-error ourselves
+2. We could submit as many solutions for scoring as needed
+
+If either of these were the case we would use a grid search or, if we had good reason to believe that the error was more or less monotonic and had no local minima we could use a bisection method to find the best value for each parameter.
+
+However this is not the case, so we can only try regions of the parameter space one at a time and assume that the error is more or less monotonic and there are no local minima. For real-valued parameters this certainly seems to be the case. For example if we choose lambda to be 1.0 and increase it gradually in increments of 0.01 we see that the score improves until lambda reaches 1.05, but it declines after that.
+
+We took this approach with the following real-valued parameters:
+- alpha
+- eta
+- gamma
+- lambda
+- subsample
+
+And also with the integer-valued parameter
+- max depth
+
+In addition we tried different choices for the booster, the evaluation metric, and the objective function.
+
+We did not try different values for the base score (it was always the mean of the log-error for the properties in the training data) or for the random seed.
 
 ## IV. Results
 _(approx. 2-3 pages)_
