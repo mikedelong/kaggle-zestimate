@@ -422,7 +422,7 @@ We will do some careful grid search to refine the parameters we use for the mode
 
 ### Refinement
 
-As stated above, we started with the default values for all of the parameters except the base score and the evaluation metric (we started with MAE instead of RMSE). This was mostly an accidental result of having gotten data flowing through XGBoost and producing results. Once that was working and we were able to build a submission file and get a score from Kaggle we needed to start refining the model. 
+As stated above, we started with the default values for all of the parameters except the base score and the evaluation metric (we started with MAE instead of RMSE). This was mostly an accidental result of having gotten data flowing through XGBoost and producing results. Once that was working and we were able to build a submission file and get a score from Kaggle we needed to start refining the model.
 
 In an ideal situation we would have one or the other of the following conditions:
 1. We would have direct access to the Zillow results so we could measure the log-error ourselves
