@@ -422,10 +422,7 @@ We will do some careful grid search to refine the parameters we use for the mode
 
 ### Refinement
 
-In this section, you will need to discuss the process of improvement you made upon the algorithms and techniques you used in your implementation. For example, adjusting parameters for certain models to acquire improved solutions would fall under the refinement category. Your initial and final solutions should be reported, as well as any significant intermediate results as necessary. Questions to ask yourself when writing this section:
-- _Has an initial solution been found and clearly reported?_
-- _Is the process of improvement clearly documented, such as what techniques were used?_
-- _Are intermediate and final solutions clearly reported as the process is improved?_
+As stated above, we started with the default values for all of the parameters except the base score and the evaluation metric (we started with MAE instead of RMSE). This was mostly an accidental result of having gotten data flowing through XGBoost and producing results. Once that was working and we were able to build a submission file and get a score from Kaggle we needed to start refining the model. 
 
 In an ideal situation we would have one or the other of the following conditions:
 1. We would have direct access to the Zillow results so we could measure the log-error ourselves
