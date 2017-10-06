@@ -488,12 +488,15 @@ We see that for the test data virtually all of the predicted log-error values cl
 
 ### Justification
 
+Fortunately it is fairly easy to justify the model based on the Kaggle scores:
 
-In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
-- _Are the final results found stronger than the benchmark result reported earlier?_
-- _Have you thoroughly analyzed and discussed the final solution?_
-- _Is the final solution significant enough to have solved the problem?_
+|Model   |Score   |
+|---|---|
+|baseline| 0.0651282 |
+|default XGBoost   | 0.0647969   |
+|tuned XGBoost   | 0.0645313  |
 
+At first glance this seems like a tiny improvement: introducing the untuned XGBoost model improves the score about only about 0.5%, and the tuned model improves the score by a further 0.4%. However, the current leader on the public leaderboard has a score of 0.0636602, representing a total relative improvement of 2.25%,  which suggests that it is highly unlikely that it is possible to reduce the log-error below say 0.06.
 
 ## V. Conclusion
 _(approx. 1-2 pages)_
