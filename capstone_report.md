@@ -447,16 +447,48 @@ We did not try different values for the base score (it was always the mean of th
 Finally, in addition to tuning the model parameters we looked at the feature significance and dropped features that did not appear in the model significance. This reduced the number of features from 57 to 51.
 
 ## IV. Results
-_(approx. 2-3 pages)_
+
+In this section we discuss the final model, its results, and discuss sensitivity analysis.
 
 ### Model Evaluation and Validation
-In this section, the final model and any supporting qualities should be evaluated in detail. It should be clear how the final model was derived and why this model was chosen. In addition, some type of analysis should be used to validate the robustness of this model and its solution, such as manipulating the input data or environment to see how the model’s solution is affected (this is called sensitivity analysis). Questions to ask yourself when writing this section:
-- _Is the final model reasonable and aligning with solution expectations? Are the final parameters of the model appropriate?_
-- _Has the final model been tested with various inputs to evaluate whether the model generalizes well to unseen data?_
-- _Is the model robust enough for the problem? Do small perturbations (changes) in training data or the input space greatly affect the results?_
-- _Can results found from the model be trusted?_
+
+Our final model has the following settings:
+
+|Parameter   |Value   |
+|---|---|
+|alpha| 0 |
+|base score   |  0.01095089 |
+|booster   | gbtree  |
+|eta   | 0.025  |
+|evaluation metric   | mae  |
+|gamma   | 0  |
+|lambda   |1.05   |
+|max depth   | 7  |
+|objective   | reg:linear  |
+|subsample   | 0.7   |
+
+And this gives us a score of 0.0645313, which of the day of writing has us ranked 1395th out of 3686 entrants on the public leaderboard, or in the top 38%. In addition our feature significance looks like this:
+
+![](./example_feature_significance.png)
+
+To a first approximation the feature significance corresponds roughly to the availability of the data: features that are typically missing do not contribute much to the log-error. Also, we see that the most important (say, the top ten) features draw significantly from the three categories we outlined earlier:
+- Property intrinsic features: finished square feet, lot size, year built, bathroom count, and building quality  
+- Location features: latitude and longitude
+- Tax-related features: the structure and land tax value and the total tax value
+
+We might argue that in a production setting we would be willing to trade off some accuracy for simplicity, and we might drop the lowest ten to fifteen features; we would expect this to make the model more stable. If we were to go beyond the present competition to look at improving the Zillow model we would expect that our time would be better spent digging into the sensitivity of the log-error to the square feet, the structure tax value, or the latitude and longitude, rather than paying more attention to the FIPS or whether the property includes a hot tub.
+
+In our case we only include the least significant features because we empirically verified that leaving them out reduced our score by tiny amounts. In a similar situation in a production environment we would probably be happy to lose the tiny contribution these features make to get faster models.
+
+Finally, we would expect that if we were to predict new properties from a distribution similar to our current training or test data that unless they were outliers in some sense. The following is a graph of the prediction from our model:
+
+![](./predicted-error-scatter.png)
+
+We see that for the test data virtually all of the predicted log-error values cluster around zero; on this basis we suspect that for any property in the three counties of interest our predicted log-error would be similar unless the property was an outlier.
 
 ### Justification
+
+
 In this section, your model’s final solution and its results should be compared to the benchmark you established earlier in the project using some type of statistical analysis. You should also justify whether these results and the solution are significant enough to have solved the problem posed in the project. Questions to ask yourself when writing this section:
 - _Are the final results found stronger than the benchmark result reported earlier?_
 - _Have you thoroughly analyzed and discussed the final solution?_
