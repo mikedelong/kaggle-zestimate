@@ -36,10 +36,6 @@ Given a set of inputs we are looking for the log-error (or the log-residual-erro
 Zillow is holding a contest on Kaggle to improve Zestimates; the contest consists of two rounds: a public round and a private round. Only the top 100 contestants from the public round will go through to the private round.
 
 ### Problem Statement
-In this section, you will want to clearly define the problem that you are trying to solve, including the strategy (outline of tasks) you will use to achieve the desired solution. You should also thoroughly discuss what the intended solution will be for this problem. Questions to ask yourself when writing this section:
-- _Is the problem statement clearly defined? Will the reader understand what you are expecting to solve?_
-- _Have you thoroughly discussed how you will attempt to solve the problem?_
-- _Is an anticipated solution clearly defined? Will the reader understand what results you are looking for?_
 
 For the public round we will minimize the mean absolute error between the predicted log error and the actual log error: rather than predicting the house price we are predicting the error of the current model. We will predict the error for all available properties that sold in the last quarter of calendar year 2016.
 
@@ -447,6 +443,8 @@ And also with the integer-valued parameter
 In addition we tried different choices for the booster, the evaluation metric, and the objective function.
 
 We did not try different values for the base score (it was always the mean of the log-error for the properties in the training data) or for the random seed.
+
+Finally, in addition to tuning the model parameters we looked at the feature significance and dropped features that did not appear in the model significance. This reduced the number of features from 57 to 51.
 
 ## IV. Results
 _(approx. 2-3 pages)_
