@@ -420,6 +420,8 @@ Once we have the data ready we can create and train the model. The model needs s
 
 We will do some careful grid search to refine the parameters we use for the model. Because XGBoost has so many parameters we need to proceed carefully.
 
+If we start with this model with the default values for almost all of the parameters (the exception being the base rate) we get a score 0.0647969, which is an improvement over our baseline model. The rest of the progress we will make by tuning the model.
+
 ### Refinement
 
 As stated above, we started with the default values for all of the parameters except the base score and the evaluation metric (we started with MAE instead of RMSE). This was mostly an accidental result of having gotten data flowing through XGBoost and producing results. Once that was working and we were able to build a submission file and get a score from Kaggle we needed to start refining the model.
