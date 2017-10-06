@@ -476,7 +476,7 @@ To a first approximation the feature significance corresponds roughly to the ava
 - Location features: latitude and longitude
 - Tax-related features: the structure and land tax value and the total tax value
 
-We might argue that in a production setting we would be willing to trade off some accuracy for simplicity, and we might drop the lowest ten to fifteen features; we would expect this to make the model more stable. If we were to go beyond the present competition to look at improving the Zillow model we would expect that our time would be better spent digging into the sensitivity of the log-error to the square feet, the structure tax value, or the latitude and longitude, rather than paying more attention to the FIPS or whether the property includes a hot tub.
+We might argue that in a production setting we would be willing to trade off some accuracy for simplicity, and we might drop the lowest ten to fifteen features; we would expect this to make the model more stable. If we were to go beyond the present competition to look at improving the Zillow model we would expect that our time would be better spent digging into the sensitivity of the log-error to the square feet, the structure tax value, or the latitude and longitude, rather than paying more attention to the FIPS code or whether the property includes a hot tub.
 
 In our case we only include the least significant features because we empirically verified that leaving them out reduced our score by tiny amounts. In a similar situation in a production environment we would probably be happy to lose the tiny contribution these features make to get faster models.
 
@@ -484,7 +484,7 @@ Finally, we would expect that if we were to predict new properties from a distri
 
 ![](./predicted-error-scatter.png)
 
-We see that for the test data virtually all of the predicted log-error values cluster around zero; on this basis we suspect that for any property in the three counties of interest our predicted log-error would be similar unless the property was an outlier.
+We see that for the test data virtually all of the predicted log-error values cluster around zero; on this basis we suspect that for any property in the three counties of interest (or chosen from a similar population) our predicted log-error would be similar unless the property was an outlier.
 
 ### Justification
 
