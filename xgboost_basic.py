@@ -288,6 +288,17 @@ make_feature_graph = True
 if make_feature_graph:
     plt.savefig(figure_filename)
 
+# todo use a copy here instead of the predictions themselves
+column_name = 'predicted logerror'
+# visualize the error for the predicted results
+fig, ax = plt.subplots()
+predictions.sort()
+ax.scatter(range(predictions.size), predictions)
+plt.ylabel(column_name)
+figure_filename = 'predicted-error-scatter.png'
+plt.savefig(figure_filename)
+logger.debug('wrote file %s' % figure_filename)
+
 logger.debug('done')
 elapsed_time = time.time() - start_time
 logger.debug('elapsed time %d seconds', elapsed_time)
