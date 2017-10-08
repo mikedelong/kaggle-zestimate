@@ -11,6 +11,7 @@ import xgboost as xgb
 from matplotlib import pyplot as plt
 from sklearn.metrics import mean_absolute_error
 from sklearn.preprocessing import LabelEncoder
+import os
 
 start_time = time.time()
 # set up logging
@@ -22,6 +23,8 @@ console_handler.setFormatter(formatter)
 logger.addHandler(console_handler)
 console_handler.setLevel(logging.DEBUG)
 logger.debug('started')
+
+result_file = './iterative_result.csv'
 
 # load in the data from CSV files
 properties_file = '../input/properties_2016.csv'
@@ -164,6 +167,16 @@ for eta in [0.0252, 0.0255, 0.257]:
             logger.debug('iterate data: %.3f %.3f %d %.4f %.3f %d: %d %.7f' %
                          (lower_limit, upper_limit, cross_validation_nfold, eta, subsample, max_depth,
                           actual_small_boost_rounds, error_result))
+
+            if os.path.exists(result_file):
+                append_write = 'ab'
+            else:
+                append_write = 'wb'
+            with open(result_file, append_write) as result_fp:
+                result_fp.write(
+                    '%.3f,%.3f,%d,%.4f,%.3f,%d,%d,%.7f\n' % (lower_limit, upper_limit, cross_validation_nfold, eta,
+                                                                subsample, max_depth, actual_small_boost_rounds,
+                                                                error_result))
             if error_result < best_error:
                 best_error = error_result
                 best_xgboost_parameters['eta'] = eta
