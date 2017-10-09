@@ -288,12 +288,12 @@ make_feature_graph = True
 if make_feature_graph:
     plt.savefig(figure_filename)
 
-# todo use a copy here instead of the predictions themselves
 column_name = 'predicted logerror'
 # visualize the error for the predicted results
 fig, ax = plt.subplots()
-predictions.sort()
-ax.scatter(range(predictions.size), predictions)
+predictions_copy = np.copy(predictions)
+predictions_copy.sort()
+ax.scatter(range(predictions_copy.size), predictions_copy)
 plt.ylabel(column_name)
 figure_filename = 'predicted-error-scatter.png'
 plt.savefig(figure_filename)
