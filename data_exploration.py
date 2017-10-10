@@ -20,6 +20,8 @@ logger.addHandler(console_handler)
 console_handler.setLevel(logging.DEBUG)
 logger.debug('started')
 
+properties_file = ''
+training_file = ''
 year_to_use = 2017
 if year_to_use == 2016:
     properties_file = '../input/properties_2016.csv'
