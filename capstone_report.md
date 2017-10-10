@@ -2,7 +2,7 @@
 ## Capstone Project
 Mike DeLong
 
-October 41st, 2017
+October 10th, 2017
 
 ## I. Definition
 
