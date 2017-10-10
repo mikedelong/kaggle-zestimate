@@ -530,26 +530,27 @@ As we have discussed above, we suspect that the error is driven primarily by the
 Here we see two things: one is that there appears to be more negative correlation for some features, but the more interesting aspect of this exercise is that fact that feature data is more sparse for outliers.
 
 ### Reflection
-In this section, you will summarize the entire end-to-end problem solution and discuss one or two particular aspects of the project you found interesting or difficult. You are expected to reflect on the project as a whole to show that you have a firm understanding of the entire process employed in your work. Questions to ask yourself when writing this section:
-- _Have you thoroughly summarized the entire process you used for this project?_
-- _Were there any interesting aspects of the project?_
-- _Were there any difficult aspects of the project?_
-- _Does the final model and solution fit your expectations for the problem, and should it be used in a general setting to solve these types of problems?_
+
+For this project we
+1. Acquired ground truth data and property data that could be split into training and testing sets
+2. Constructed a test set from the property data and ground truth data
+3. Did some initial exploration of the data with visualization
+4. Built a baseline model
+5. Built an untuned XGBoost model that produced better results than the baseline model
+6. Iteratively refined both the training data and the model parameters to get better results, using a process that was more trial and error than true grid search
+7. Reached a point of diminishing returns where changes in the model parameters did not improve the model further
+8. Wrote up a report explaining the process, showing the results, and discussing the relative importance of various features.
+
+The whole project was interesting if occasionally difficult; because of the way the problem is posed, where we are looking to model the error of an existing model rather than the underlying phenomenon (i.e. the property prices themselves), the signal in the data is somewhat faint, and is difficult to know when the model might be overfitting. Also, because this was the first time working with XGBoost this was as much an exercise in learning about XGBoost as it was attempting to do well in the Kaggle competition.
+
+The nature of the Kaggle competition, with only five daily scores, was also an issue.
+
+The underlying problem is a real-world problem, and more interesting than some classic problems such as digit recognition or iris classification.
+
+In the end the model was a pretty good fit to the problem, in that there do not appear to be models of similar complexity that are significantly better.
 
 ### Improvement
 In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:
 - _Are there further improvements that could be made on the algorithms or techniques you used in this project?_
 - _Were there algorithms or techniques you researched that you did not know how to implement, but would consider using if you knew how?_
 - _If you used your final solution as the new benchmark, do you think an even better solution exists?_
-
------------
-
-**Before submitting, ask yourself. . .**
-
-- Does the project report you’ve written follow a well-organized structure similar to that of the project template?
-- Is each section (particularly **Analysis** and **Methodology**) written in a clear, concise and specific fashion? Are there any ambiguous terms or phrases that need clarification?
-- Would the intended audience of your project be able to understand your analysis, methods, and results?
-- Have you properly proof-read your project report to assure there are minimal grammatical and spelling mistakes?
-- Are all the resources used for this project correctly cited and referenced?
-- Is the code that implements your solution easily readable and properly commented?
-- Does the code execute without error and produce results similar to those reported?
