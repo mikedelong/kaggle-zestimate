@@ -189,6 +189,7 @@ plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontwe
 plt.tight_layout()
 figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
+plt.close()
 
 train_pearson_correlations = train.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
@@ -202,6 +203,7 @@ plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontwe
 plt.tight_layout()
 figure_filename = 'training-data-pearson-correlations.png'
 plt.savefig(figure_filename)
+plt.close()
 
 properties_pearson_correlations = properties.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
@@ -215,6 +217,7 @@ plt.suptitle('Test data Pearson correlations - outliers', fontsize=8, fontweight
 plt.tight_layout()
 figure_filename = 'property-data-pearson-correlations.png'
 plt.savefig(figure_filename)
+plt.close()
 
 
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
@@ -234,6 +237,7 @@ plt.tight_layout()
 plt.suptitle('Properties data null counts by column')
 figure_filename = 'properties-na-counts.png'
 plt.savefig(figure_filename)
+plt.close()
 
 na_counts = {column_name: train[column_name].isnull().sum() for column_name in list(train) if
              column_name not in ['parcelid']}
@@ -250,6 +254,7 @@ plt.tight_layout()
 plt.suptitle('Training data null counts by column')
 figure_filename = 'train-na-counts.png'
 plt.savefig(figure_filename)
+plt.close()
 
 logger.debug(properties['latitude'].isnull().sum())
 logger.debug(properties['longitude'].isnull().sum())
@@ -339,6 +344,7 @@ plt.ylabel(column_name)
 # plt.show()
 figure_filename = 'train-error-scatter.png'
 plt.savefig(figure_filename)
+plt.close()
 logger.debug('wrote file %s' % figure_filename)
 
 # describe the error and the tax amount
@@ -355,6 +361,7 @@ fig, ax = plt.subplots()
 ax.scatter(outliers['latitude'], outliers['longitude'], c=outliers['fips'].apply(lambda x: colors[x]))
 figure_filename = 'outliers-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
+plt.close()
 logger.debug('wrote file %s' % figure_filename)
 
 column_name = 'logerror'
@@ -366,6 +373,7 @@ train.hist(ax=axes[1], bins=bins, column=column_name)
 axes[1].set_yscale('log')
 figure_filename = 'train-error-histogram.png'
 plt.savefig(figure_filename)
+plt.close()
 logger.debug('wrote file %s' % figure_filename)
 
 fig, ax = plt.subplots()
@@ -373,6 +381,7 @@ t1 = train[['latitude', 'longitude', 'fips']].dropna()
 ax.scatter(t1['latitude'], t1['longitude'], c=t1['fips'].apply(lambda x: colors[x]))
 figure_filename = 'train-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
+plt.close()
 logger.debug('wrote file %s' % figure_filename)
 
 fig, ax = plt.subplots()
@@ -381,33 +390,9 @@ logger.debug('if we filter out n/as from the test data we have %s' % (t0.shape,)
 ax.scatter(t0['latitude'], t0['longitude'], c=t0['fips'].apply(lambda x: colors[x]))
 figure_filename = 'properties-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
+plt.close()
 logger.debug('wrote file %s' % figure_filename)
 
-# column_name = 'latitude'
-# fig, axes = plt.subplots(ncols=2, nrows=2)
-# logger.debug('train %s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
-# train.hist(ax=axes[0, 0], bins=50, column=column_name)
-# train.hist(ax=axes[0, 1], bins=50, column=column_name)
-# axes[0, 1].set_yscale('log')
-# logger.debug('properties %s min: %d max: %d' % (column_name, properties[column_name].min(), properties[column_name].max()))
-# properties.hist(ax=axes[1, 0], bins=50, column=column_name)
-# properties.hist(ax=axes[1, 1], bins=50, column=column_name)
-# axes[1, 1].set_yscale('log')
-# figure_filename = column_name + '-both.png'
-# plt.savefig(figure_filename)
-#
-# column_name = 'longitude'
-# fig, axes = plt.subplots(ncols=2, nrows=2)
-# logger.debug('train %s min: %d max: %d' % (column_name, train[column_name].min(), train[column_name].max()))
-# train.hist(ax=axes[0, 0], bins=50, column=column_name)
-# train.hist(ax=axes[0, 1], bins=50, column=column_name)
-# axes[0, 1].set_yscale('log')
-# logger.debug('properties %s min: %d max: %d' % (column_name, properties[column_name].min(), properties[column_name].max()))
-# properties.hist(ax=axes[1, 0], bins=50, column=column_name)
-# properties.hist(ax=axes[1, 1], bins=50, column=column_name)
-# axes[1, 1].set_yscale('log')
-# figure_filename = column_name + '-both.png'
-# plt.savefig(figure_filename)
 
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
@@ -425,6 +410,7 @@ logger.debug(
 properties.hist(ax=axes[1, 1], bins=50, column=column_name_2)
 figure_filename = '-'.join([column_name_1, column_name_2, 'both']) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 column_name = 'taxvaluedollarcnt'
 fig, axes = plt.subplots(ncols=2)
@@ -434,6 +420,7 @@ train.hist(ax=axes[1], bins=50, column=column_name)
 axes[1].set_yscale('log')
 figure_filename = column_name + '-train.png'
 plt.savefig(figure_filename)
+plt.close()
 
 fig, axes = plt.subplots(ncols=2)
 limit = train[column_name].max()
@@ -442,6 +429,7 @@ properties[properties[column_name] < limit].hist(ax=axes[1], bins=50, column=col
 axes[1].set_yscale('log')
 figure_filename = '-'.join([column_name, 'properties']) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 # todo combine these into a single plot
 column_name = 'lotsizesquarefeet'
@@ -451,6 +439,7 @@ train.hist(ax=ax, bins=40, column=column_name)
 ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
+plt.close()
 
 fig, ax = plt.subplots()
 limit = train[column_name].max()
@@ -458,6 +447,7 @@ properties[properties[column_name] < limit].hist(ax=ax, column=column_name)
 ax.set_yscale('log')
 figure_filename = '-'.join([column_name, 'properties', 'log']) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 # need to use enough bins to get quarter-bath accuracy
 column_name = 'calculatedbathnbr'
@@ -470,6 +460,7 @@ ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
 # plt.show()
+plt.close()
 
 column_name = 'bedroomcnt'
 fig, ax = plt.subplots()
@@ -482,6 +473,7 @@ train.hist(ax=ax, bins=(max_bedroom_count - min_bedroom_count + 1), column=colum
 ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
+plt.close()
 
 # todo combine these into a single plot(?)
 column_name = 'calculatedfinishedsquarefeet'
@@ -500,6 +492,7 @@ else:
     figure_filename = column_name + '.png'
 plt.savefig(figure_filename)
 # plt.show()
+plt.close()
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
