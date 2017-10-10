@@ -55,6 +55,7 @@ axes[1].set_yscale('log')
 axes[1].set_xticks([1970, 1980, 1990, 2000, 2010, 2020])
 figure_filename = '-'.join([column_name, 'histogram']) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 
 fig, axes = plt.subplots(ncols=2)
@@ -67,6 +68,7 @@ axes[1].set_yscale('log')
 axes[1].set_xlim(1800, 2020)
 figure_filename = '-'.join([column_name, 'histogram']) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_00 = 'calculatedfinishedsquarefeet'
@@ -85,6 +87,7 @@ train.hist(ax=axes[1, 1], bins=50, column=column_name_11)
 axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
@@ -99,6 +102,7 @@ properties.hist(ax=axes[1, 1], bins=50, column=column_name_11)
 axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_00 = 'taxvaluedollarcnt'
@@ -118,6 +122,7 @@ train.hist(ax=axes[1, 1], bins=50, column=column_name_11)
 axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
@@ -133,6 +138,7 @@ properties.hist(ax=axes[1, 1], bins=50, column=column_name_11)
 axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
+plt.close()
 
 # count nulls for some representative fields:
 properties_count = len(properties)
