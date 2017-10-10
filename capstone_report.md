@@ -504,6 +504,22 @@ _(approx. 1-2 pages)_
 ### Free-Form Visualization
 This is a fairly hard problem for a couple of reasons: one is that we are attempting to predict the error from a model we have not seen. We might reasonably suspect that the error is essentially random, which would suggest that we would not be able to improve on the baseline model. Another reason is that we suspect that in the training (and test) data some features are nearly collinear, so it is difficult for the model to extract much additional information from many of them.
 
+We can measure the collinearity by looking at the Pearson coefficients of the features; this is a good use of a visualization since we have so many features and we have a prior expectation we can confirm visually.
+
+The following is a heatmap of the Pearson coefficients of the training data.
+
+![](./training-data-pearson-correlations.png)
+
+This plot shows green for positive correlation, red for negative correlation, yellow in between, and white for missing data. For the sake of clarity we have removed a handful of very sparse features.
+
+In this plot we see two positive clusters of features: the house features in the upper left, mostly related to the structure square feet, and a tax dollar cluster in the lower right corner. In both cases we see that we have a fair amount of collinearity, as we have features that are nearly sums of other features.
+
+We might also note that the log-error (in the top left corner) is not highly correlated with any feature, positively or negatively; this is consistent with the contention that the log-error is mostly noise.
+
+We can compare this picture to the same graph for the property (test) data:
+
+![](./property-data-pearson-correlations.png)
+
 
 In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
