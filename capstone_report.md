@@ -550,7 +550,27 @@ The underlying problem is a real-world problem, and more interesting than some c
 In the end the model was a pretty good fit to the problem, in that there do not appear to be models of similar complexity that are significantly better.
 
 ### Improvement
-In this section, you will need to provide discussion as to how one aspect of the implementation you designed could be improved. As an example, consider ways your implementation can be made more general, and what would need to be modified. You do not need to make this improvement, but the potential solutions resulting from these changes are considered and compared/contrasted to your current solution. Questions to ask yourself when writing this section:
-- _Are there further improvements that could be made on the algorithms or techniques you used in this project?_
-- _Were there algorithms or techniques you researched that you did not know how to implement, but would consider using if you knew how?_
-- _If you used your final solution as the new benchmark, do you think an even better solution exists?_
+
+The obvious way forward would be to include an XGBoost model in an ensemble model.
+
+There were several kernels on Kaggle that showed how to combine various models into an ensemble model. After some consideration we decided against following suit because of
+1. The complexity of the resulting model
+2. The difficulty of explaining results in terms of the observable features
+3. The relatively small improvements shown in example ensemble models as compared to example XGBoost models.
+
+In other words, it did not appear that training and tuning an ensemble model would be worth the effort in terms of the improved score when compared to the added difficulty in explaining the results.
+
+Other possible improvements include the following:
+1. Dimensionality reduction, especially for features with lots of missing values
+2. Grid search or bisection for XGBoost
+3. Training separate models for outlying data
+
+In the rest of this section we will discuss these in turn.
+
+As stated repeatedly above there are really only three (or maybe four) components of the property data: location, property intrinsic, and tax data, including assessment and delinquency data. We suspect there is information in features that the model considers less significant that might be important, but that is being lost because there are so many features describing aspects of the same underlying component. We would hope that careful dimension reduction would bring these features out in the data, rather than submerging them further. The technical barrier here would be in finding a good dimension reduction approach that handles sparse data well.
+
+We were resource constrained in a way that made full grid search unattractive, especially given the number of XGBoost parameters. We assumed and had empirical reasons to believe that the solution space was more or less monotonic, so a multi-parameter bisection method that would iterate through the parameters and use a bisection method to optimize each parameter in turn might have gotten more accuracy on each of the real-valued parameters. Of course, the barrier we faced here was the fact that we could not observe the true objective function directly, so minimizing the loss over the training data would get us only so far in minimizing the loss function over the test data.
+
+Finally, the test data has a substantial number of cases where features the model considers significant (like the longitude and latitude) are missing. Out of several million test cases there were tens of thousands of these. We suspect that these are over-represented in the outliers; the question is what to do with them. We suspect that using an ensemble where we used XGBoost trained over data without the missing data (e.g. training data with latitude and longitude removed) may help us make some headway here.
+
+In conclusion there are lots of ways forward, and only time and material constraints would limit what we could do with this data.
