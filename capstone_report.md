@@ -502,6 +502,9 @@ At first glance this seems like a tiny improvement: introducing the untuned XGBo
 _(approx. 1-2 pages)_
 
 ### Free-Form Visualization
+This is a fairly hard problem for a couple of reasons: one is that we are attempting to predict the error from a model we have not seen. We might reasonably suspect that the error is essentially random, which would suggest that we would not be able to improve on the baseline model. Another reason is that we suspect that in the training (and test) data some features are nearly collinear, so it is difficult for the model to extract much additional information from many of them.
+
+
 In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
 - _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
 - _Is the visualization thoroughly analyzed and discussed?_
