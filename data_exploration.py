@@ -184,14 +184,15 @@ plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspe
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
-plt.suptitle('Training data Pearson correlations', fontsize=8, fontweight='bold')
+plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
 plt.tight_layout()
 figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
 plt.close()
 
 # todo factor out columns to drop as a variable
-thin_train = train.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
+thin_train = train.drop(['assessmentyear', 'decktypeid', 'parcelid',
+                         'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
                          'storytypeid'], axis=1)
 train_pearson_correlations = thin_train.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
@@ -208,8 +209,8 @@ plt.savefig(figure_filename)
 plt.close()
 
 # todo factor out columns to drop as a variable
-thin_properties = train.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
-                              'storytypeid'], axis=1)
+thin_properties = properties.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7',
+                                   'pooltypeid10', 'storytypeid'], axis=1)
 properties_pearson_correlations = thin_properties.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
@@ -218,7 +219,7 @@ plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspe
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
-plt.suptitle('Test data Pearson correlations - outliers', fontsize=8, fontweight='bold')
+plt.suptitle('Test data Pearson correlations', fontsize=8, fontweight='bold')
 plt.tight_layout()
 figure_filename = 'property-data-pearson-correlations.png'
 plt.savefig(figure_filename)
