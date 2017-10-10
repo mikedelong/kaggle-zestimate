@@ -184,6 +184,33 @@ plt.tight_layout()
 figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
 
+train_pearson_correlations = train.corr(method='pearson')
+correlations_len = len(train_pearson_correlations)
+correlations_columns = train_pearson_correlations.columns
+plt.figure()
+plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
+plt.colorbar()
+plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
+plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
+plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
+plt.tight_layout()
+figure_filename = 'training-data-pearson-correlations.png'
+plt.savefig(figure_filename)
+
+properties_pearson_correlations = properties.corr(method='pearson')
+correlations_len = len(train_pearson_correlations)
+correlations_columns = train_pearson_correlations.columns
+plt.figure()
+plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
+plt.colorbar()
+plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
+plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
+plt.suptitle('Test data Pearson correlations - outliers', fontsize=8, fontweight='bold')
+plt.tight_layout()
+figure_filename = 'property-data-pearson-correlations.png'
+plt.savefig(figure_filename)
+
+
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
              column_name not in ['parcelid']}
 x_pos = np.arange(len(na_counts))
