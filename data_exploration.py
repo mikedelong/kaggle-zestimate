@@ -45,7 +45,7 @@ properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
 train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 
-fig, axes = plt.subplots(ncols=2)
+fig0, axes = plt.subplots(ncols=2)
 column_name = 'taxdelinquencyyear'
 train.hist(ax=axes[0], bins=10, column=column_name)
 axes[0].set_yscale('log')
@@ -56,7 +56,6 @@ axes[1].set_xticks([1970, 1980, 1990, 2000, 2010, 2020])
 figure_filename = '-'.join([column_name, 'histogram']) + '.png'
 plt.savefig(figure_filename)
 plt.close()
-
 
 fig, axes = plt.subplots(ncols=2)
 column_name = 'yearbuilt'
@@ -175,8 +174,7 @@ columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', '
                    'taxdelinquencyyear']
 correlation_input_data = big_error.drop(columns_to_drop, axis=1)
 
-# let's get the Pearson correlation for the training data
-
+# let's get the Pearson correlations for the training data
 train_pearson_correlations = correlation_input_data.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
@@ -185,13 +183,15 @@ plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspe
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
-plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
+plt.suptitle('Training data Pearson correlations', fontsize=8, fontweight='bold')
 plt.tight_layout()
 figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
 plt.close()
 
-train_pearson_correlations = train.corr(method='pearson')
+thin_train = train.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
+                         'storytypeid'], axis=1)
+train_pearson_correlations = thin_train.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
 plt.figure()
@@ -199,13 +199,16 @@ plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspe
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
-plt.suptitle('Training data Pearson correlations - outliers', fontsize=8, fontweight='bold')
+plt.suptitle('Training data Pearson correlations', fontsize=8, fontweight='bold')
 plt.tight_layout()
 figure_filename = 'training-data-pearson-correlations.png'
 plt.savefig(figure_filename)
 plt.close()
 
-properties_pearson_correlations = properties.corr(method='pearson')
+thin_properties = train.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
+                              'storytypeid'], axis=1)
+
+properties_pearson_correlations = thin_properties.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
 plt.figure()
@@ -218,7 +221,6 @@ plt.tight_layout()
 figure_filename = 'property-data-pearson-correlations.png'
 plt.savefig(figure_filename)
 plt.close()
-
 
 na_counts = {column_name: properties[column_name].isnull().sum() for column_name in list(properties) if
              column_name not in ['parcelid']}
@@ -392,8 +394,6 @@ figure_filename = 'properties-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 plt.close()
 logger.debug('wrote file %s' % figure_filename)
-
-
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_1 = 'latitude'
