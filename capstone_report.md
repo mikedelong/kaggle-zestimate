@@ -2,7 +2,7 @@
 ## Capstone Project
 Mike DeLong
 
-September 31st, 2017
+October 41st, 2017
 
 ## I. Definition
 
@@ -499,7 +499,6 @@ Fortunately it is fairly easy to justify the model based on the Kaggle scores:
 At first glance this seems like a tiny improvement: introducing the untuned XGBoost model improves the score about only about 0.5%, and the tuned model improves the score by a further 0.4%. However, the current leader on the public leaderboard has a score of 0.0636602, representing a total relative improvement of 2.25%,  which suggests that it is highly unlikely that it is possible to reduce the log-error below say 0.06.
 
 ## V. Conclusion
-_(approx. 1-2 pages)_
 
 ### Free-Form Visualization
 This is a fairly hard problem for a couple of reasons: one is that we are attempting to predict the error from a model we have not seen. We might reasonably suspect that the error is essentially random, which would suggest that we would not be able to improve on the baseline model. Another reason is that we suspect that in the training (and test) data some features are nearly collinear, so it is difficult for the model to extract much additional information from many of them.
