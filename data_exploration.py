@@ -45,7 +45,7 @@ properties['taxdelinquencyyear'] = properties['taxdelinquencyyear'].apply(
 train_df = pd.read_csv(training_file)
 train = train_df.merge(properties, how='left', on='parcelid')
 
-fig0, axes = plt.subplots(ncols=2)
+fig, axes = plt.subplots(ncols=2)
 column_name = 'taxdelinquencyyear'
 train.hist(ax=axes[0], bins=10, column=column_name)
 axes[0].set_yscale('log')
@@ -56,6 +56,7 @@ axes[1].set_xticks([1970, 1980, 1990, 2000, 2010, 2020])
 figure_filename = '-'.join([column_name, 'histogram']) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, axes = plt.subplots(ncols=2)
 column_name = 'yearbuilt'
@@ -68,6 +69,7 @@ axes[1].set_xlim(1800, 2020)
 figure_filename = '-'.join([column_name, 'histogram']) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_00 = 'calculatedfinishedsquarefeet'
@@ -87,6 +89,7 @@ axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
@@ -102,6 +105,7 @@ axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 column_name_00 = 'taxvaluedollarcnt'
@@ -122,6 +126,7 @@ axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['train', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
 properties.hist(ax=axes[0, 0], bins=50, column=column_name_00)
@@ -138,13 +143,12 @@ axes[1, 1].set_yscale('log')
 figure_filename = '-'.join(['properties', column_name_00, column_name_01, column_name_10, column_name_11]) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 # count nulls for some representative fields:
 properties_count = len(properties)
-not_null_percentages = {column_name: 100 *
-                                     float(properties[column_name].count()) / float(properties_count) for column_name in
-                        list(properties)}
-
+not_null_percentages = {column_name: 100 * float(properties[column_name].count()) / float(properties_count) for
+                        column_name in list(properties)}
 sorted_percentages = sorted(not_null_percentages.items(), key=operator.itemgetter(1))
 print ('|column | percent not null|')
 print('|---|---|')
@@ -164,9 +168,6 @@ for column_name in log_columns:
 big_error = train[abs(train['logerror']) > 0.3]
 logger.debug('big error has length %d (%.2f percent of total)' % (
     len(big_error), 100 * (float(len(big_error)) / float(len(train_df)))))
-columns_to_drop = []
-columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
-                   'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear']
 columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', 'pooltypeid2',
                    'pooltypeid7', 'pooltypeid10', 'storytypeid', 'assessmentyear',
                    'architecturalstyletypeid', 'basementsqft', 'finishedsquarefeet6', 'finishedsquarefeet13',
@@ -189,6 +190,7 @@ figure_filename = 'training-data-outliers-pearson-correlations.png'
 plt.savefig(figure_filename)
 plt.close()
 
+# todo factor out columns to drop as a variable
 thin_train = train.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
                          'storytypeid'], axis=1)
 train_pearson_correlations = thin_train.corr(method='pearson')
@@ -205,9 +207,9 @@ figure_filename = 'training-data-pearson-correlations.png'
 plt.savefig(figure_filename)
 plt.close()
 
+# todo factor out columns to drop as a variable
 thin_properties = train.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7', 'pooltypeid10',
                               'storytypeid'], axis=1)
-
 properties_pearson_correlations = thin_properties.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
@@ -347,6 +349,7 @@ plt.ylabel(column_name)
 figure_filename = 'train-error-scatter.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 logger.debug('wrote file %s' % figure_filename)
 
 # describe the error and the tax amount
@@ -364,6 +367,7 @@ ax.scatter(outliers['latitude'], outliers['longitude'], c=outliers['fips'].apply
 figure_filename = 'outliers-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 logger.debug('wrote file %s' % figure_filename)
 
 column_name = 'logerror'
@@ -376,6 +380,7 @@ axes[1].set_yscale('log')
 figure_filename = 'train-error-histogram.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 logger.debug('wrote file %s' % figure_filename)
 
 fig, ax = plt.subplots()
@@ -384,6 +389,7 @@ ax.scatter(t1['latitude'], t1['longitude'], c=t1['fips'].apply(lambda x: colors[
 figure_filename = 'train-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 logger.debug('wrote file %s' % figure_filename)
 
 fig, ax = plt.subplots()
@@ -393,6 +399,7 @@ ax.scatter(t0['latitude'], t0['longitude'], c=t0['fips'].apply(lambda x: colors[
 figure_filename = 'properties-latitude-longitude-fips.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 logger.debug('wrote file %s' % figure_filename)
 
 fig, axes = plt.subplots(ncols=2, nrows=2)
@@ -411,6 +418,7 @@ properties.hist(ax=axes[1, 1], bins=50, column=column_name_2)
 figure_filename = '-'.join([column_name_1, column_name_2, 'both']) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 column_name = 'taxvaluedollarcnt'
 fig, axes = plt.subplots(ncols=2)
@@ -421,6 +429,7 @@ axes[1].set_yscale('log')
 figure_filename = column_name + '-train.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, axes = plt.subplots(ncols=2)
 limit = train[column_name].max()
@@ -430,6 +439,7 @@ axes[1].set_yscale('log')
 figure_filename = '-'.join([column_name, 'properties']) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 # todo combine these into a single plot
 column_name = 'lotsizesquarefeet'
@@ -440,6 +450,7 @@ ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 fig, ax = plt.subplots()
 limit = train[column_name].max()
@@ -448,6 +459,7 @@ ax.set_yscale('log')
 figure_filename = '-'.join([column_name, 'properties', 'log']) + '.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 # need to use enough bins to get quarter-bath accuracy
 column_name = 'calculatedbathnbr'
@@ -459,8 +471,8 @@ train.hist(ax=ax, bins=4 * (max_bath_count - min_bath_count + 1), column=column_
 ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
-# plt.show()
 plt.close()
+del fig
 
 column_name = 'bedroomcnt'
 fig, ax = plt.subplots()
@@ -474,6 +486,7 @@ ax.set_yscale('log')
 figure_filename = column_name + '-log.png'
 plt.savefig(figure_filename)
 plt.close()
+del fig
 
 # todo combine these into a single plot(?)
 column_name = 'calculatedfinishedsquarefeet'
@@ -491,8 +504,8 @@ if do_log:
 else:
     figure_filename = column_name + '.png'
 plt.savefig(figure_filename)
-# plt.show()
 plt.close()
+del fig
 
 logger.debug('done')
 elapsed_time = time.time() - start_time
