@@ -510,9 +510,11 @@ The following is a heatmap of the Pearson coefficients of the training data.
 
 ![](./training-data-pearson-correlations.png)
 
-This plot shows green for positive correlation, red for negative correlation, yellow in between, and white for missing data. For the sake of clarity we have removed a handful of very sparse features.
+This plot displays the data using a colormap we have chosen to be usable for people who are colorblind, with white for missing data. For the sake of clarity we have removed a handful of very sparse features.
 
 In this plot we see two positive clusters of features: the house features in the upper left, mostly related to the structure square feet, and a tax dollar cluster in the lower right corner. In both cases we see that we have a fair amount of collinearity, as we have features that are nearly sums of other features.
+
+Finally, we note that we do not see much collinearity in the location data. The latitude and longitude, in the center of the plot, are negatively correlated with each other but not strongly correlated with any  other features.
 
 We might also note that the log-error (in the top left corner) is not highly correlated with any feature, positively or negatively; this is consistent with the contention that the log-error is mostly noise.
 
@@ -520,11 +522,13 @@ We can compare this picture to the same graph for the property (test) data:
 
 ![](./property-data-pearson-correlations.png)
 
+The picture here is similar but not the same, as we would expect, as our training data is a good but not perfect sample of the overall property data.
 
-In this section, you will need to provide some form of visualization that emphasizes an important quality about the project. It is much more free-form, but should reasonably support a significant result or characteristic about the problem that you want to discuss. Questions to ask yourself when writing this section:
-- _Have you visualized a relevant or important quality about the problem, dataset, input data, or results?_
-- _Is the visualization thoroughly analyzed and discussed?_
-- _If a plot is provided, are the axes, title, and datum clearly defined?_
+As we have discussed above, we suspect that the error is driven primarily by the outliers. To see this we have taken from the training data just the outliers, by filtering out properties with an absolute value less than three, and then filtering out sparse features, of which there are more than for the original training data.
+
+![](./training-data-outliers-pearson-correlations.png)
+
+Here we see two things: one is that there appears to be more negative correlation for some features, but the more interesting aspect of this exercise is that fact that feature data is more sparse for outliers.
 
 ### Reflection
 In this section, you will summarize the entire end-to-end problem solution and discuss one or two particular aspects of the project you found interesting or difficult. You are expected to reflect on the project as a whole to show that you have a firm understanding of the entire process employed in your work. Questions to ask yourself when writing this section:
