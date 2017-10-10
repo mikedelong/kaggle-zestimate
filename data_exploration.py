@@ -175,12 +175,14 @@ columns_to_drop = ['poolcnt', 'parcelid', 'buildingclasstypeid', 'decktypeid', '
                    'taxdelinquencyyear']
 correlation_input_data = big_error.drop(columns_to_drop, axis=1)
 
+color_map  = 'YlGnBu'
+
 # let's get the Pearson correlations for the training data
 train_pearson_correlations = correlation_input_data.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
 plt.figure()
-plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
+plt.imshow(train_pearson_correlations, cmap=color_map, interpolation='none', aspect='auto')
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
@@ -198,7 +200,7 @@ train_pearson_correlations = thin_train.corr(method='pearson')
 correlations_len = len(train_pearson_correlations)
 correlations_columns = train_pearson_correlations.columns
 plt.figure()
-plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
+plt.imshow(train_pearson_correlations, cmap=color_map, interpolation='none', aspect='auto')
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
@@ -212,10 +214,10 @@ plt.close()
 thin_properties = properties.drop(['assessmentyear', 'decktypeid', 'poolcnt', 'pooltypeid2', 'pooltypeid7',
                                    'pooltypeid10', 'storytypeid'], axis=1)
 properties_pearson_correlations = thin_properties.corr(method='pearson')
-correlations_len = len(train_pearson_correlations)
-correlations_columns = train_pearson_correlations.columns
+correlations_len = len(properties_pearson_correlations)
+correlations_columns = properties_pearson_correlations.columns
 plt.figure()
-plt.imshow(train_pearson_correlations, cmap='RdYlGn', interpolation='none', aspect='auto')
+plt.imshow(properties_pearson_correlations, cmap=color_map, interpolation='none', aspect='auto')
 plt.colorbar()
 plt.xticks(range(correlations_len), correlations_columns, rotation='vertical', fontsize=8)
 plt.yticks(range(correlations_len), correlations_columns, fontsize=8)
