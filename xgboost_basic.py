@@ -55,10 +55,7 @@ for column_name in log_columns:
 
 # todo go through these and see if any of them will improve our score
 # all of these are either one value or null, so we can tell the model that they're Boolean
-true_false_columns = ['hashottuborspa',
-                      # 'buildingclasstypeid', 'decktypeid', 'poolcnt', 'pooltypeid2',
-                      # 'pooltypeid7', 'pooltypeid10',
-                      'fireplaceflag']
+true_false_columns = ['hashottuborspa','fireplaceflag']
 for column_name in true_false_columns:
     properties[column_name] = properties[column_name].apply(lambda x: False if pd.isnull(x) else True)
 
