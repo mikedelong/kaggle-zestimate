@@ -23,3 +23,5 @@ The solution is implemented in Python 2.7.12, and a working Python environment w
 - xgboost
 - sklearn.preprocessing
 - scipy.stats
+
+All of these are available via pip, so there are no special installation requirements.
