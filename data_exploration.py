@@ -6,7 +6,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import scipy.stats as stats
-import stateplane
 from sklearn.preprocessing import MinMaxScaler
 
 start_time = time.time()
@@ -319,6 +318,7 @@ for column_name in list(train):
                                                                       properties) else -1))
 
 if False:
+    import stateplane
     logger.debug(
         train['fips'].head(20)
     )
