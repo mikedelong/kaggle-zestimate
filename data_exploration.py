@@ -21,7 +21,7 @@ logger.debug('started')
 
 properties_file = ''
 training_file = ''
-year_to_use = 2017
+year_to_use = 2016
 if year_to_use == 2016:
     properties_file = '../input/properties_2016.csv'
     training_file = '../input/train_2016_v2.csv'
