@@ -16,4 +16,10 @@ and for this project we used the 2016 data. The data files of interest are
 - The data dictionary: https://www.kaggle.com/c/zillow-prize-1/download/zillow_data_dictionary.xlsx.zip
 
 The solution is implemented in Python 2.7.12, and a working Python environment will include the following libraries:
-- 
+- operator
+- matplotlib.pyplot
+- numpy
+- pandas
+- xgboost
+- sklearn.preprocessing
+- scipy.stats
