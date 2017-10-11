@@ -163,7 +163,6 @@ if False:
 else:
     train_df = train_df[(train_df.logerror < upper_limit) & (train_df.logerror > lower_limit)]
 
-    # train_df = train_df[abs(train_df.logerror) < outlier_limit]
 logger.debug('After removing outliers train shape: {}; test shape unchanged.'.format(x_train.shape, ))
 # todo figure out how to do this only once
 train_columns_to_drop = ['parcelid', 'logerror', 'transactiondate'] + additional_columns_to_drop
@@ -175,8 +174,8 @@ logger.debug('y_train shape: %s' % (y_train.shape,))
 dtrain = xgb.DMatrix(x_train, label=y_train)
 dtest = xgb.DMatrix(x_test)
 
-random_seed = 1
 # xgboost parameters
+random_seed = 1
 xgboost_parameters = {
     'alpha': 0.0,
     'base_score': y_mean,
